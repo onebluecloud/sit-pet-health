@@ -76,6 +76,7 @@ codex plugin add sit-pet-health@sit-pet-health --json
 ![小红书 7 页发布图组](docs/publish/xiaohongshu/contact-sheet.png)
 
 - 小红书正文、标题和配图顺序：[`docs/publish/xiaohongshu-post.md`](docs/publish/xiaohongshu-post.md)
+- 完整 HTML 发布说明：[`docs/publish/sit-pet-health-xhs-publish-guide.html`](docs/publish/sit-pet-health-xhs-publish-guide.html)
 - RedSkill 上传检查单：[`docs/publish/redskill-upload-checklist.md`](docs/publish/redskill-upload-checklist.md)
 - GitHub Release 文案：[`docs/publish/github-release-v1.0.0.md`](docs/publish/github-release-v1.0.0.md)
 - 打包：`PowerShell -ExecutionPolicy Bypass -File scripts/build-redskill-package.ps1`
