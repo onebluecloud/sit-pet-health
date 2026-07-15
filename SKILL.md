@@ -15,6 +15,7 @@ description: 从当前 RedSkill 包离线安装、启动、检查或卸载 Rouse
 ## 首次安装
 
 1. 将包含本文件的目录作为 `PACKAGE_ROOT`。不要从 GitHub 或其他站点重新下载项目。
+   包内 `openai.yaml.txt` 是 RED Skill 上传兼容载体，安装器会在本地自动还原为 `openai.yaml`；不要要求用户手工改名。
 2. Windows 运行：
 
    ```powershell

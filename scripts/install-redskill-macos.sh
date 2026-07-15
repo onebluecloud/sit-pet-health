@@ -4,6 +4,11 @@ set -euo pipefail
 package_root="${1:-${0:A:h:h}}"
 skip_launch="${2:-}"
 
+# Restore Codex UI metadata from RED Skill upload-safe text carriers.
+while IFS= read -r -d '' yaml_txt; do
+  /bin/cp -f "$yaml_txt" "${yaml_txt%.txt}"
+done < <(/usr/bin/find "$package_root" -type f -name '*.yaml.txt' -print0)
+
 if ! command -v codex >/dev/null 2>&1; then
   print -u2 'Codex Desktop/CLI is required. This package does not install a separate app.'
   exit 1

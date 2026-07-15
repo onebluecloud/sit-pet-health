@@ -2,10 +2,11 @@
 
 ## 上传文件
 
-- 文件：`rousepet-redskill-v1.1.0.zip`
+- 文件：`rousepet-redskill-v1.1.1.zip`
 - 校验：同时保留 `.zip.sha256`
 - 类型：原创 Skill
 - 一篇笔记只挂载这一份 RedSkill
+- 上传解析结果应为 `61` 个文件、约 `406.5 KB`，且不再提示过滤不支持的格式。
 
 ## 发布设置
 

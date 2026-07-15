@@ -23,7 +23,7 @@ RousePet 会把 `/hatch` 生成的 Codex 宠物只读复制到桌面，让它随
 
 ## RedSkill 安装
 
-小红书 RedSkill 版本使用 Release 附件 `rousepet-redskill-v1.1.0.zip`。附件已经包含 Skill、Plugin、Hooks、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。
+小红书 RedSkill 版本使用 Release 附件 `rousepet-redskill-v1.1.1.zip`。附件已经包含 Skill、Plugin、Hooks、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。v1.1.1 使用上传兼容载体保存 YAML 元数据和许可证，避免平台过滤后破坏 Skill 结构。
 
 把压缩包作为 RedSkill 获取后，对 Codex 说：
 
@@ -80,7 +80,7 @@ codex plugin add sit-pet-health@sit-pet-health --json
 - 小红书正文、标题和配图顺序：[`docs/publish/xiaohongshu-post.md`](docs/publish/xiaohongshu-post.md)
 - 完整 HTML 发布说明：[`docs/publish/rousepet-xhs-publish-guide.html`](docs/publish/rousepet-xhs-publish-guide.html)
 - RedSkill 上传检查单：[`docs/publish/redskill-upload-checklist.md`](docs/publish/redskill-upload-checklist.md)
-- GitHub Release 文案：[`docs/publish/github-release-v1.1.0.md`](docs/publish/github-release-v1.1.0.md)
+- GitHub Release 文案：[`docs/publish/github-release-v1.1.1.md`](docs/publish/github-release-v1.1.1.md)
 - 打包：`PowerShell -ExecutionPolicy Bypass -File scripts/build-redskill-package.ps1`
 
 ## 卸载

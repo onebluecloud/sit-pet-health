@@ -21,6 +21,14 @@ if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
 }
 
 $PackageRoot = [System.IO.Path]::GetFullPath($PackageRoot)
+
+# The RED Skill uploader does not retain .yaml files. The release archive uses
+# .yaml.txt carriers so installation can restore Codex UI metadata locally.
+Get-ChildItem -LiteralPath $PackageRoot -Recurse -File -Filter '*.yaml.txt' | ForEach-Object {
+    $yamlPath = $_.FullName.Substring(0, $_.FullName.Length - 4)
+    Copy-Item -LiteralPath $_.FullName -Destination $yamlPath -Force
+}
+
 $marketplaceFile = Join-Path $PackageRoot '.agents\plugins\marketplace.json'
 if (-not (Test-Path -LiteralPath $marketplaceFile -PathType Leaf)) {
     throw "Invalid RedSkill package: missing $marketplaceFile"
