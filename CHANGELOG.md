@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 - 2026-07-14
+
+- Add a self-contained RedSkill entry point that installs the bundled local marketplace without visiting GitHub.
+- Add Windows and macOS RedSkill installers that register the Plugin and launch the pet immediately.
+- Add deterministic RedSkill packaging with a SHA-256 checksum.
+- Add coordinated Xiaohongshu upload copy, review checklist, and GitHub release notes.
+
 ## 0.9.0 - 2026-07-14
 
 - Add a first-run no-pet state that asks Codex for a one-sentence concept or reference image and routes creation into plugin-private storage.
