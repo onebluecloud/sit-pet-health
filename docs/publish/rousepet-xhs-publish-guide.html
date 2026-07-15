@@ -18,6 +18,7 @@
     .prompt{font-size:21px;font-weight:800;background:#232421;color:#fff8ef;padding:28px;border-radius:8px}.prompt code{display:block;background:transparent;color:#fff8ef;font-family:inherit;padding:0}
     .copy-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.copy{border:0;background:var(--ink);color:white;padding:10px 16px;font-weight:800;cursor:pointer;border-radius:6px;white-space:nowrap}.copy:hover{background:var(--coral)}
     .post-body{white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);padding:30px;border-radius:8px;font-size:17px}.tags{font-size:18px;font-weight:800;color:#9a5f54;background:var(--coral-soft);padding:18px 22px;border-radius:8px}
+    .plain-copy{display:block;width:100%;min-height:1220px;resize:vertical;background:#fff;border:1px solid var(--line);border-radius:6px;padding:28px;color:var(--ink);font:17px/1.85 "Microsoft YaHei UI","Microsoft YaHei",sans-serif;letter-spacing:0;white-space:pre-wrap}
     .image-list{display:grid;gap:26px}.image-item{display:grid;grid-template-columns:300px 1fr;gap:28px;align-items:start}.image-item img{display:block;width:300px;height:375px;object-fit:cover;border:1px solid var(--line);box-shadow:0 12px 32px rgba(71,52,44,.12)}.path{display:block;margin-top:12px;font-family:Consolas,monospace;font-size:13px;background:#f2ece7;padding:12px;word-break:break-all}
     ul,ol{padding-left:24px}.compact li{margin:7px 0}.footer{padding-top:40px;color:var(--muted);font-size:14px}
     @media(max-width:760px){.hero-grid,.grid,.image-item{grid-template-columns:1fr}.image-item img{width:100%;height:auto}h1{font-size:38px}main{width:min(100% - 24px,1120px)}}
@@ -33,30 +34,80 @@
         <div class="meta"><strong>品牌名称</strong>RousePet<br><strong>产品类型</strong>Codex RedSkill + Plugin<br><strong>平台</strong>Windows 正式支持<br>macOS 实验性支持</div>
       </div>
     </header>
-    <nav><a href="#intro">简介</a><a href="#features">功能</a><a href="#usage">使用方法</a><a href="#health">阶段设计</a><a href="#privacy">数据边界</a><a href="#post">标题与正文</a><a href="#images">图片位置</a><a href="#files">发布文件</a></nav>
+    <nav><a href="#skill-text">完整介绍</a><a href="#post">标题与正文</a><a href="#images">图片位置</a><a href="#files">发布文件</a></nav>
 
-    <section id="intro"><h2>RousePet 简介</h2><p class="summary">RousePet 不是一只固定形象的桌宠，而是为用户自己的 Codex 宠物增加久坐反馈的 RedSkill。它只读扫描 <code>/hatch</code> 生成的 <code>pet.json</code> 与 spritesheet，把同款形象复制进 Plugin 私有目录，再根据系统键鼠空闲时间驱动久坐、恢复和 Codex 空窗提醒。没有官方宠物时，也可以用一句描述或参考图在私有目录创建新宠物。</p><div class="note" style="margin-top:24px">品牌主张：让你的 Codex 宠物，替你记住起身。</div></section>
+    <section id="skill-text">
+      <div class="copy-row"><div><h2>RedSkill 纯文字介绍</h2><p>下面是一整段纯文字，直接复制到平台唯一的介绍输入框。</p></div><button class="copy" data-target="skill-copy">复制全部介绍</button></div>
+      <textarea id="skill-copy" class="plain-copy" readonly>RousePet
 
-    <section id="features"><h2>主要功能</h2><div class="grid">
-      <div class="card"><h3>读取用户自己的宠物</h3><p>支持 <code>CODEX_HOME/pets</code> 和 <code>~/.codex/pets</code>，多宠物可选择；源文件安装前后校验 SHA-256。</p></div>
-      <div class="card"><h3>五级久坐状态</h3><p>0/30/60/90/120 分钟依次为精神、发懒、蔫了、病恹恹、休息。最差状态可逆，不出现死亡。</p></div>
-      <div class="card"><h3>按宠物特性映射动作</h3><p>优先使用原图集的 idle、waiting、tired、sick、rest；缺少动作时回退到相近原动作，不强造统一哭泣表情。</p></div>
-      <div class="card"><h3>自动判断真正起身</h3><p>读取系统键鼠空闲时间。短暂离开部分恢复；连续空闲达到阈值并重新操作后，才确认一次完整起身。</p></div>
-      <div class="card"><h3>Codex 空窗提醒</h3><p>Codex 接手任务且用户已经久坐时，宠物提醒利用等待时间活动；真离开后记录“听劝”并庆祝。</p></div>
-      <div class="card"><h3>克制的本地提醒</h3><p>损友、温柔、冷幽默三种语气；所有主动提醒每小时最多 3 次，任意两次至少间隔 10 分钟。</p></div>
-      <div class="card"><h3>没有宠物也能开始</h3><p>提供一句描述或参考图，Skill 会生成、校验并打包到 Plugin 私有 <code>custom-sources</code>，不写官方宠物目录。</p></div>
-      <div class="card"><h3>桌宠基本交互</h3><p>支持点击庆祝、拖动、30%–250% 无级缩放、右键设置、暂停提醒、换宠物和生成分享卡。</p></div>
-    </div></section>
+让你的 Codex 宠物，替你记住起身。
 
-    <section id="usage"><h2>别人如何使用</h2><div class="prompt"><code>安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。</code></div><ol>
-      <li>从小红书笔记下方获取并挂载 RedSkill。</li><li>在 Codex 里发送上面这句话。</li><li>Codex 从 RedSkill 包内注册本地 Plugin，不访问 GitHub，不下载 EXE。</li><li>安装结束后桌宠立即出现；多宠物时进入选择器，没有宠物时进入创建流程。</li><li>未来第一次触发 Plugin Hooks 时，用户完成一次 Codex 官方信任审核。</li><li>右键宠物可调整尺寸、阶段节奏、离开电脑阈值、提醒语气和安静时段。</li>
-    </ol><div class="note warning">Windows 10/11 已完成真机验证；macOS 是实验性支持；Linux 暂无桌面浮窗。元气只是宠物互动值，不是寿命或医疗指标。</div></section>
+RousePet 是一个为 Codex 宠物增加久坐反馈和起身恢复能力的 RedSkill。它不是一只固定形象的桌宠，而是读取用户已经通过 /hatch 创建的宠物，让每个人都能继续使用自己的宠物形象。用户连续坐在电脑前时，宠物会逐渐没精神；用户真正离开电脑并回来后，宠物会恢复元气并庆祝。Codex 接手任务时，宠物还会提醒用户利用等待时间起身活动。
 
-    <section id="health"><h2>五阶段设计</h2><table><thead><tr><th>连续活跃久坐</th><th>阶段</th><th>宠物表现</th></tr></thead><tbody>
-      <tr><td>0–30 分钟</td><td>精神</td><td>保持原宠物 idle，不制造焦虑。</td></tr><tr><td>30–60 分钟</td><td>发懒</td><td>waiting 慢放，动作开始收敛。</td></tr><tr><td>60–90 分钟</td><td>蔫了</td><td>优先 tired；没有则回退 waiting/idle。</td></tr><tr><td>90–120 分钟</td><td>病恹恹</td><td>优先 sick，以动作和克制提示为主。</td></tr><tr><td>120 分钟以上</td><td>休息/罢工</td><td>优先 rest；没有则原地休息，可逆、无死亡。</td></tr>
-    </tbody></table></section>
+主要功能
 
-    <section id="privacy"><h2>数据与安全边界</h2><ul class="compact"><li>官方 <code>pet.json</code> 和 spritesheet 只读，复制前后校验哈希。</li><li>复制体、健康状态、设置、自定义宠物和分享卡只写 Plugin 私有目录。</li><li>不安装 EXE，不修改 Codex 配置，不上传宠物图像和健康数据。</li><li>Hooks 只处理开始、等待和结束事件，不读取或保存任务正文。</li><li>卸载只删除自己的运行进程和私有数据，不删除 <code>~/.codex/pets</code>。</li></ul></section>
+1. 使用用户自己的 Codex 宠物
+RousePet 支持读取 CODEX_HOME/pets 和 ~/.codex/pets 中的 pet.json 与 spritesheet。存在多只宠物时可以选择。官方宠物文件始终只读，安装前后会校验源文件哈希，不会修改或覆盖原宠物。
+
+2. 五阶段久坐反馈
+RousePet 根据连续活跃久坐时间，把宠物状态分为精神、发懒、蔫了、病恹恹和休息五个阶段。变化是逐步发生的，不会突然从正常状态直接变成倒地或哭泣。最差状态只是可逆的休息，不包含死亡画面。
+
+3. 根据不同宠物映射动作
+每个人的宠物图集可能不同。RousePet 会优先使用当前宠物已有的 idle、waiting、tired、sick 和 rest 等动作。缺少某个动作时，会回退到最接近的原有休息动作，不强行给所有宠物套用相同的哭泣、趴倒或蘑菇效果，也不会改写原图集。
+
+4. 自动判断用户是否真正起身
+RousePet 读取系统键盘和鼠标的连续空闲时间。只移动一下鼠标或短暂离开，不会被当成完整起身。达到设定的离开时长并重新操作电脑后，才会确认一次起身；短暂离开可以获得部分恢复，完整离开可以获得完整恢复。
+
+5. Codex 空窗提醒
+当 Codex 正在处理任务、用户仍在电脑前并且已经久坐时，宠物会提醒用户：“这段我替你盯着，出去晃一圈。”如果用户随后真的离开电脑，回来时宠物会获得额外恢复，并记录一次“听劝”。Codex 任务结束后用户仍未活动，宠物可以再进行一次克制提醒。
+
+6. 本地个性化提醒
+提醒文字不会让所有用户每次看到完全相同的一句话，也不会在运行时临时调用 LLM。RousePet 会根据宠物名字、当前久坐阶段、当天起身次数、Codex 是否正在工作以及最近使用过的句子，从本地语料中选择合适的表达。用户可以选择损友、温柔或冷幽默语气。主动提醒有频率限制，默认每小时最多三次，任意两次之间至少间隔十分钟。
+
+7. 没有 Codex 宠物也能使用
+如果用户还没有通过 /hatch 创建宠物，可以提供一句描述或一张参考图片。RousePet 会调用包内的宠物创建流程生成并校验图集，但新宠物只保存在 RousePet 的私有目录，不会写入或冒充官方宠物。
+
+8. 桌宠交互和设置
+宠物支持单击庆祝、拖动位置、30% 到 250% 无级缩放、右键设置、暂停提醒、切换宠物和生成分享卡。用户可以调整五阶段时间、离开电脑判定阈值、提醒语气、提醒频率和安静时段。
+
+别人如何使用
+
+1. 在小红书笔记下方获取 RousePet RedSkill。
+2. 在 Codex 中发送：“安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。”
+3. Codex 会从 RedSkill 包内安装本地 Plugin，不访问 GitHub，不另外下载 EXE。
+4. 安装结束后桌宠会立即出现。存在多只宠物时进入选择器；没有宠物时进入创建流程。
+5. 第一次触发 Plugin Hooks 时，Codex 会显示官方信任审核，用户确认后才能启用任务空窗提醒。
+6. 安装后通过宠物右键菜单调整大小、提醒节奏和其他设置。
+
+五阶段设计
+
+0 到 30 分钟：精神。保持宠物原本的 idle 动作，不制造焦虑，也不扣减元气。
+
+30 到 60 分钟：发懒。优先使用 waiting 等较安静的动作并适当慢放，让变化刚刚开始被看见。
+
+60 到 90 分钟：蔫了。优先使用 tired 动作；没有 tired 时，回退到 waiting 或较安静的 idle 动作。
+
+90 到 120 分钟：病恹恹。优先使用 sick 动作，配合克制的状态提示，但不会叠加夸张哭泣或廉价装饰。
+
+120 分钟以上：休息。优先使用 rest 动作；没有 rest 时，让宠物使用最接近的原地休息动作。这个状态随时可以通过真正起身恢复，不包含死亡或不可逆惩罚。
+
+起身恢复规则
+
+用户离开电脑一到两分钟时，可以获得部分恢复。连续离开达到设置阈值并重新操作电脑后，获得完整恢复。如果起身发生在 Codex 接手任务的提醒之后，还会获得额外恢复和庆祝反馈。锁屏、睡眠和系统挂起期间不会继续累计久坐惩罚。
+
+数据与安全
+
+1. 官方 pet.json 和 spritesheet 只读，RousePet 不修改、不覆盖、不删除用户的官方宠物。
+2. 宠物复制体、健康状态、设置、自定义宠物和分享卡只写入 RousePet Plugin 的私有目录。
+3. 不安装独立 EXE，不修改 Codex 配置，不向网络上传宠物图像、健康状态或久坐记录。
+4. Plugin Hooks 只接收任务开始、等待和结束等生命周期事件，不读取或保存 Codex 任务正文。
+5. 卸载时只结束 RousePet 自己的运行进程并删除自己的私有数据，不删除 ~/.codex/pets。
+6. 元气只是桌宠互动值，不代表真实寿命、身体状态或医疗结论。
+
+平台支持
+
+Windows 10 和 Windows 11 已完成真机验证。macOS 当前为实验性支持。Linux 暂不提供桌面浮窗。</textarea>
+    </section>
 
     <section id="post"><h2>小红书标题、正文和标签</h2><h3>推荐标题</h3><div class="copy-row"><p><strong>我把 Codex 宠物做成了久坐提醒器</strong></p><button class="copy" data-copy="我把 Codex 宠物做成了久坐提醒器">复制标题</button></div><h3 style="margin-top:30px">备选标题</h3><ul><li>RousePet：你越久坐，它越没精神</li><li>Codex 接手任务后，我的宠物开始赶我走</li><li>一个不靠打卡的久坐提醒 RedSkill</li></ul>
       <div class="copy-row" style="margin-top:32px"><h3>发布正文</h3><button class="copy" data-target="post-copy">复制正文</button></div>
@@ -113,7 +164,8 @@ Windows 版已完成真机验证；macOS 目前是实验性支持。元气只是
   </main>
   <script>
     document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{
-      const value=button.dataset.copy || document.getElementById(button.dataset.target).innerText;
+      const target=button.dataset.target ? document.getElementById(button.dataset.target) : null;
+      const value=button.dataset.copy || (target && 'value' in target ? target.value : target.innerText);
       await navigator.clipboard.writeText(value.trim());
       const old=button.textContent;button.textContent='已复制';setTimeout(()=>button.textContent=old,1200);
     }));
