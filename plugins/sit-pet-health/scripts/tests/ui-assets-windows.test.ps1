@@ -28,7 +28,8 @@ function Write-TransparentPng {
 try {
     $settingsSource = Get-Content -LiteralPath (Join-Path $pluginRoot 'scripts\settings-windows.ps1') -Raw -Encoding UTF8
     $runtimeSource = Get-Content -LiteralPath (Join-Path $pluginRoot 'scripts\runtime-windows.ps1') -Raw -Encoding UTF8
-    Assert-True ($settingsSource -match '<Track x:Name="PART_Track" Height="22" Margin="11,0"') 'The size-slider track no longer reserves room for its thumb.'
+    Assert-True ($settingsSource -notmatch 'ScaleSlider|宠物大小') 'The redundant size slider is still present in settings.'
+    Assert-True ($runtimeSource -match '\$resizeHandle\.Add_DragDelta' -and $runtimeSource -match '\$petImage\.Add_MouseWheel') 'Direct pet resizing is missing.'
     Assert-True ($runtimeSource -match 'TemplateBinding Tag\}" FontFamily="Segoe MDL2 Assets"') 'The status menu is not using the Fluent icon font.'
     Assert-True ($runtimeSource -notmatch 'Tag="&#x2316;"|Tag="&#x2197;"|Tag="&#x00D7;"') 'The status menu still contains mixed-font fallback icons.'
     Assert-True ($runtimeSource -match 'Width="258"' -and $runtimeSource -match 'x:Name="StatsText"') 'The compact status menu layout is missing.'

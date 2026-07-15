@@ -28,7 +28,7 @@
   <div class="topbar"></div>
   <main>
     <header>
-      <div class="eyebrow">ORIGINAL REDSKILL · RELEASE v1.2.0</div>
+      <div class="eyebrow">ORIGINAL REDSKILL · RELEASE v1.2.1</div>
       <div class="hero-grid">
         <div><h1><span>RousePet</span><br>小红书发布说明</h1><p class="lead">让用户自己的 Codex 宠物替他们记住起身：久坐会逐级没精神，真正离开电脑会恢复，Codex 接手任务时还会提醒用户利用空窗活动。</p></div>
         <div class="meta"><strong>品牌名称</strong>RousePet<br><strong>产品类型</strong>Codex RedSkill + Plugin<br><strong>平台</strong>Windows 正式支持<br>macOS 实验性支持</div>
@@ -111,56 +111,42 @@ Windows 10 和 Windows 11 已完成真机验证。macOS 当前为实验性支持
 
     <section id="post"><h2>小红书标题、正文和标签</h2><h3>推荐标题</h3><div class="copy-row"><p><strong>我把 Codex 宠物做成了久坐提醒器</strong></p><button class="copy" data-copy="我把 Codex 宠物做成了久坐提醒器">复制标题</button></div><h3 style="margin-top:30px">备选标题</h3><ul><li>RousePet：你越久坐，它越没精神</li><li>Codex 接手任务后，我的宠物开始赶我走</li><li>一个不靠打卡的久坐提醒 RedSkill</li></ul>
       <div class="copy-row" style="margin-top:32px"><h3>发布正文</h3><button class="copy" data-target="post-copy">复制正文</button></div>
-      <div id="post-copy" class="post-body">我把 Codex 宠物做成了久坐提醒器。
+      <div id="post-copy" class="post-body">我把 Codex 里孵出来的宠物，做成了一只会陪我“坐蔫”的久坐提醒器。
 
-你坐得越久，它越没精神；真正离开电脑几分钟再回来，它才会回血。
+坐着不动时，它不会突然倒地，而是从精神、发懒、蔫了、病恹恹到休息，一点点慢下来。真正离开电脑几分钟再回来，它才回血庆祝；只晃一下鼠标不算。
 
-它叫 RousePet。我做它的原因也很直接：传统久坐弹窗太像命令，关掉一次以后，下一次还是会顺手关掉。但看到自己的桌宠一点点蔫下来，我确实会多犹豫一下。
+最好用的是 Codex 跑任务的空窗。它接手后，宠物会提醒我：“这段没你事，去动动。”我真离开五分钟，回来还会多记一次“听劝”。
 
-这是一个可以挂在笔记下方、让其他 Codex 用户直接获取的 RedSkill。拿到以后，只要对 Codex 说：
+它叫 RousePet，是我做的原创 RedSkill。拿到后对 Codex 说：
 
 “安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。”
 
-Codex 会从包内完成安装，桌宠随后直接出现。不用另下 EXE，也不用自己找脚本。
+它会只读复制你的 /hatch 宠物。缺少 tired、sick 或 rest 时，先用原动作立即显示，再只在私有目录补齐缺失动画；官方 pet.json 和图集不会改。没有宠物，也可以用一句描述或参考图创建一只私有宠物。
 
-RousePet 会只读复制你用 /hatch 创建的宠物。原来的 pet.json 和图集不会被修改，久坐记录、设置和动作副本都留在插件自己的目录。
+Windows 已真机验证，macOS 目前是实验性支持。它不是医疗工具，元气只是互动值。
 
-如果你还没有 Codex 宠物，也可以给一句描述或一张参考图。新宠物只生成在 RousePet 的私有目录，不会冒充或覆盖官方宠物。
-
-它的变化不是“坐久了突然倒地”。0 到 30 分钟保持原来的精神状态；之后依次发懒、蔫下来、明显疲惫，最后只是可逆地休息。每个阶段优先使用这只宠物明确已有的动作；缺少 tired、sick 或 rest 时，会先用原动作显示，再在插件私有目录生成和质检缺失动画，完全不改官方图集。
-
-真正离开电脑几分钟再回来，它才恢复并庆祝。只移动一下鼠标，不算起身。
-
-我最喜欢的是 Codex 接手任务的那段空窗。已经久坐时，宠物会提醒：“这段我替你盯着，出去晃一圈。”如果我真的离开五分钟，回来会记一次“听劝”。
-
-提醒台词不是每个人都一样，也不是运行时临时调用 LLM。它会根据宠物名字、久坐阶段、当天起身次数和最近说过的话，从本地语料里选择；同时有提醒预算，不会隔几分钟念一次。
-
-这版之前踩过不少真实的坑：龙只剩半个头、透明窗口挡桌面、点击后宠物跑偏、状态一下子全叠上去，甚至长出过很廉价的蘑菇。现在这些都被拆掉重做了。
-
-Windows 版已完成真机验证；macOS 目前是实验性支持。元气只是桌宠互动值，不对应寿命，也不是医疗指标。
-
-我更希望它像一只有分寸的同伴，而不是换了皮肤的健康弹窗。</div>
-      <h3 style="margin-top:30px">标签</h3><div class="copy-row"><div class="tags" id="tag-copy">#AI工具 #桌面宠物 #久坐提醒 #Codex #AI编程 #REDSkill</div><button class="copy" data-target="tag-copy">复制标签</button></div>
+你会为了不让自己的宠物蔫掉，真的站起来五分钟吗？</div>
+      <h3 style="margin-top:30px">标签</h3><div class="copy-row"><div class="tags" id="tag-copy">#打工人 #久坐提醒 #职场办公 #效率工具 #桌面宠物 #AI工具 #Codex #REDSkill</div><button class="copy" data-target="tag-copy">复制标签</button></div>
     </section>
 
     <section id="images"><h2>7 张发布图片与具体位置</h2><p>小红书按 01 到 07 的顺序上传。以下路径均为当前电脑上的绝对位置。</p><div class="image-list">
-      <div class="image-item"><img src="xiaohongshu/01.png"><div><h3>01 · RousePet 封面</h3><p>第一眼先看到品牌名和核心主张，再用角标说明它是原创 RedSkill。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\01.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/02.png"><div><h3>02 · 五阶段机制</h3><p>证明状态是渐进的，并说明不同宠物会使用或私有补齐自己的动作。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\02.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/03.png"><div><h3>03 · Codex 空窗提醒</h3><p>展示产品差异点：Codex 接手工作时，宠物催用户离开电脑。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\03.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/04.png"><div><h3>04 · 起身恢复</h3><p>说明系统如何判断真实离开，以及返回后的庆祝反馈。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\04.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/05.png"><div><h3>05 · 设置与可调参数</h3><p>展示真实设置页，证明不是概念稿。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\05.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/06.png"><div><h3>06 · 隐私边界</h3><p>回答用户最关心的“会不会改坏原宠物、会不会读取任务”。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\06.png</span></div></div>
-      <div class="image-item"><img src="xiaohongshu/07.png"><div><h3>07 · 获取和安装</h3><p>给出拿到 RedSkill 后要发送给 Codex 的一句话。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu\07.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/01.png"><div><h3>01 · RousePet 封面</h3><p>第一眼先看到品牌名和核心主张，再用角标说明它是原创 RedSkill。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\01.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/02.png"><div><h3>02 · 五阶段机制</h3><p>证明状态是渐进的，并说明不同宠物会使用或私有补齐自己的动作。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\02.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/03.png"><div><h3>03 · Codex 空窗提醒</h3><p>展示产品差异点：Codex 接手工作时，宠物催用户离开电脑。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\03.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/04.png"><div><h3>04 · 起身恢复</h3><p>说明系统如何判断真实离开，以及返回后的庆祝反馈。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\04.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/05.png"><div><h3>05 · 设置与可调参数</h3><p>展示真实设置页，证明不是概念稿。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\05.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/06.png"><div><h3>06 · 隐私边界</h3><p>回答用户最关心的“会不会改坏原宠物、会不会读取任务”。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\06.png</span></div></div>
+      <div class="image-item"><img src="xiaohongshu/07.png"><div><h3>07 · 获取和安装</h3><p>给出拿到 RedSkill 后要发送给 Codex 的一句话。</p><span class="path">E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu\07.png</span></div></div>
     </div></section>
 
     <section id="files"><h2>发布所需文件</h2><table><tbody>
-      <tr><th>RedSkill 上传包</th><td><code>E:\gpt\projects\rousepet-release-v1.2.0\rousepet-redskill-v1.2.0.zip</code></td></tr>
-      <tr><th>校验文件</th><td><code>E:\gpt\projects\rousepet-release-v1.2.0\rousepet-redskill-v1.2.0.zip.sha256</code></td></tr>
-      <tr><th>小红书图片目录</th><td><code>E:\gpt\projects\rousepet-release-v1.2.0\xiaohongshu</code></td></tr>
-      <tr><th>GitHub Release</th><td><a href="https://github.com/onebluecloud/sit-pet-health/releases/tag/v1.2.0">https://github.com/onebluecloud/sit-pet-health/releases/tag/v1.2.0</a></td></tr>
+      <tr><th>RedSkill 上传包</th><td><code>E:\gpt\projects\rousepet-release-v1.2.1\rousepet-redskill-v1.2.1.zip</code></td></tr>
+      <tr><th>校验文件</th><td><code>E:\gpt\projects\rousepet-release-v1.2.1\rousepet-redskill-v1.2.1.zip.sha256</code></td></tr>
+      <tr><th>小红书图片目录</th><td><code>E:\gpt\projects\rousepet-release-v1.2.1\xiaohongshu</code></td></tr>
+      <tr><th>GitHub Release</th><td><a href="https://github.com/onebluecloud/sit-pet-health/releases/tag/v1.2.1">https://github.com/onebluecloud/sit-pet-health/releases/tag/v1.2.1</a></td></tr>
     </tbody></table><div class="note warning" style="margin-top:24px">小红书需要人工发布：选择“原创”，精确添加 #REDSkill，一篇笔记只挂这一份 Skill，不在正文放 GitHub 链接；图组含 AI 辅助排版时按平台要求勾选“含 AI 合成内容”。</div></section>
 
-    <div class="footer">RousePet v1.2.0 · 本页是本地发布说明，不会上传或读取任何用户数据。</div>
+    <div class="footer">RousePet v1.2.1 · 本页是本地发布说明，不会上传或读取任何用户数据。</div>
   </main>
   <script>
     document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{

@@ -155,18 +155,6 @@ $xaml = @'
       <Setter Property="Foreground" Value="#514943"/><Setter Property="Background" Value="#FFFFFF"/><Setter Property="BorderBrush" Value="#DDCFC4"/><Setter Property="BorderThickness" Value="1"/>
       <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox"><Border CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"><ScrollViewer x:Name="PART_ContentHost"/></Border></ControlTemplate></Setter.Value></Setter>
     </Style>
-    <Style TargetType="Slider">
-      <Setter Property="Height" Value="30"/>
-      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Slider">
-        <Grid Height="30" VerticalAlignment="Center">
-          <Track x:Name="PART_Track" Height="22" Margin="11,0" VerticalAlignment="Center">
-            <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static Slider.DecreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#E98779" VerticalAlignment="Center"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
-            <Track.Thumb><Thumb Width="19" Height="19"><Thumb.Template><ControlTemplate TargetType="Thumb"><Ellipse Fill="#FFFDF9" Stroke="#D9796D" StrokeThickness="2"><Ellipse.Effect><DropShadowEffect Color="#6A4D43" BlurRadius="5" ShadowDepth="1" Opacity="0.18"/></Ellipse.Effect></Ellipse></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
-            <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static Slider.IncreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#DCE9E2" VerticalAlignment="Center"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
-          </Track>
-        </Grid>
-      </ControlTemplate></Setter.Value></Setter>
-    </Style>
   </Window.Resources>
   <Border Margin="18" CornerRadius="18" Background="#FFFDF9" BorderBrush="#EADFD5" BorderThickness="1">
     <Border.Effect><DropShadowEffect Color="#49372C" BlurRadius="26" ShadowDepth="7" Opacity="0.20"/></Border.Effect>
@@ -213,16 +201,6 @@ $xaml = @'
             </StackPanel>
           </Border>
 
-          <Border Margin="0,12,0,0" Padding="15" CornerRadius="12" Background="#F2F8F5" BorderBrush="#D9E8E0" BorderThickness="1">
-            <Grid>
-              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="88"/></Grid.ColumnDefinitions>
-              <TextBlock Text="宠物大小" FontSize="12" FontWeight="SemiBold" Foreground="#5A514B"/>
-              <TextBlock x:Name="ScaleValue" Grid.Column="1" HorizontalAlignment="Right" FontSize="11" Foreground="#668C7B"/>
-              <Slider x:Name="ScaleSlider" AutomationProperties.Name="宠物大小" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0" Minimum="0.3" Maximum="2.5" TickFrequency="0.1" IsSnapToTickEnabled="False"/>
-            </Grid>
-          </Border>
-
           <Border Margin="0,12,0,0" Padding="15" CornerRadius="12" Background="#F8F3FA" BorderBrush="#E5DAE8" BorderThickness="1">
             <StackPanel>
               <TextBlock Text="提醒语气" FontSize="12" FontWeight="SemiBold" Foreground="#5A514B"/>
@@ -267,7 +245,7 @@ $xaml = @'
 '@
 
 $window = [System.Windows.Markup.XamlReader]::Parse($xaml)
-foreach ($name in @('TitleBar','HeaderHint','CloseButton','PetSelectionPanel','NoPetPanel','CopyPetPromptButton','PetPicker','SensitivityPicker','SedentaryPicker','ScaleValue','ScaleSlider','TonePicker','QuietEnabled','QuietStart','QuietEnd','DiagnoseButton','DiagnosticText','StatusText','CancelButton','SaveButton')) {
+foreach ($name in @('TitleBar','HeaderHint','CloseButton','PetSelectionPanel','NoPetPanel','CopyPetPromptButton','PetPicker','SensitivityPicker','SedentaryPicker','TonePicker','QuietEnabled','QuietStart','QuietEnd','DiagnoseButton','DiagnosticText','StatusText','CancelButton','SaveButton')) {
     Set-Variable -Name ($name.Substring(0,1).ToLowerInvariant() + $name.Substring(1)) -Value $window.FindName($name)
 }
 $headerHint.Text = if ($FirstRun) { '先选一只宠物，稍后随时能换。' } else { '宠物、提醒和隐私状态都在这里。' }
@@ -279,9 +257,6 @@ for ($index = 0; $index -lt $pets.Count; $index++) {
 if ($selectedIndex -lt 0 -and $pets.Count -gt 0) { $selectedIndex = 0 }
 $petPicker.SelectedIndex = $selectedIndex
 $petPicker.IsEnabled = $pets.Count -gt 0
-$scaleSlider.Value = [math]::Max(0.3, [math]::Min(2.5, [double]$config.petScale))
-$scaleValue.Text = "$([math]::Round($scaleSlider.Value * 100))%"
-$scaleSlider.Add_ValueChanged({ $scaleValue.Text = "$([math]::Round($scaleSlider.Value * 100))%" })
 $quietEnabled.IsChecked = [bool]$config.quietHoursEnabled
 $quietStart.Text = [string]$config.quietHoursStart
 $quietEnd.Text = [string]$config.quietHoursEnd
@@ -349,7 +324,6 @@ $saveButton.Add_Click({
             'relaxed' { $config.graceSeconds = 2700; $config.lazySeconds = 4500; $config.wiltedSeconds = 6300; $config.sickSeconds = 8100; $config.codexOpportunitySeconds = 2700 }
             default { $config.graceSeconds = 1800; $config.lazySeconds = 3600; $config.wiltedSeconds = 5400; $config.sickSeconds = 7200; $config.codexOpportunitySeconds = 1800 }
         }
-        $config.petScale = [math]::Round([double]$scaleSlider.Value, 3)
         $config.dialogueTone = [string](($tonePicker.SelectedItem).Tag)
         $config.quietHoursEnabled = [bool]$quietEnabled.IsChecked
         $config.quietHoursStart = $quietStart.Text

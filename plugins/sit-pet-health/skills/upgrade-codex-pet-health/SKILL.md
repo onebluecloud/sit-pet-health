@@ -129,7 +129,7 @@ PowerShell -ExecutionPolicy Bypass -File "$env:CLAUDE_PLUGIN_ROOT\scripts\diagno
 ## 换宠物与卸载
 
 - 换宠物：优先让用户从右键“宠物与提醒设置”选择；命令行可带新的 `-SourcePet` 重新运行准备脚本。旧复制体留在 `CLAUDE_PLUGIN_DATA/pets`，直到明确清理。
-- 设置：右键可调整宠物、尺寸、离开电脑灵敏度、久坐阶段节奏、提醒语气和安静时段；保存后运行时自动重启应用。
+- 设置：桌面上悬停后拖右下角或滚轮可直接调整尺寸；右键设置可切换宠物、调整离开电脑灵敏度、久坐阶段节奏、提醒语气和安静时段，保存后运行时自动重启应用。
 - 暂停：右键可暂停一小时、暂停到当天结束或恢复；兼容旧 `pause.flag`，新状态写入插件私有 `pause.json`，不要改 Codex 配置。
 - 分享：右键生成 1080×1350 今日分享卡，输出到插件私有 `share` 目录；卡片明确元气不是寿命/医疗指标。
 - 卸载：先运行 `scripts/uninstall-windows.ps1` 或 `scripts/uninstall-macos.sh`，由脚本校验进程命令行和私有数据目录后结束窗口、删除 `CLAUDE_PLUGIN_DATA`；再用 `codex plugin remove` 删除对应 marketplace 的插件。不要删除 `~/.codex/pets` 中任何目录。

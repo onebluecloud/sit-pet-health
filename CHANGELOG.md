@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Remove the redundant size slider from settings while preserving direct resize-handle, mouse-wheel, and saved `petScale` behavior.
+- Correct the recovery and installation publicity frames so they show a clear celebration and a complete happy pet.
+- Replace the long promotional body and narrow technical tags with a concise first-person post and mixed workplace, wellbeing, product, and RedSkill topics.
+
 ## 1.2.0
 
 - Detect whether a pet explicitly declares dedicated tired, sick, and rest actions instead of treating slices of the standard failed row as complete health coverage.
