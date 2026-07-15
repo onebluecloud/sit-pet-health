@@ -105,7 +105,27 @@ try {
     }
 }
 catch {
-    $message = $_.Exception.Message.Replace('"', '\"')
-    [Console]::Out.WriteLine("{`"systemMessage`":`"Codex pet health could not start: $message`"}")
+    $rawMessage = $_.Exception.Message
+    $noPet = $rawMessage -match 'pets directory not found|No valid Codex pet was found'
+    if ($noPet) {
+        if ($eventName -eq 'SessionStart' -and $env:SIT_PET_TEST_MODE -ne '1' -and -not [string]::IsNullOrWhiteSpace($pluginRoot) -and -not [string]::IsNullOrWhiteSpace($pluginData)) {
+            $settingsPath = Join-Path $pluginRoot 'scripts\settings-windows.ps1'
+            if (Test-Path -LiteralPath $settingsPath -PathType Leaf) {
+                $arguments = @(
+                    '-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA',
+                    '-File', ('"' + $settingsPath + '"'),
+                    '-PluginRoot', ('"' + $pluginRoot + '"'),
+                    '-PluginData', ('"' + $pluginData + '"'),
+                    '-FirstRun'
+                )
+                Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments | Out-Null
+            }
+        }
+        $systemMessage = 'No Codex pet was found. Ask the user for either a one-sentence pet description or a reference image. Then follow the installed upgrade-codex-pet-health Skill and its bundled hatch-pet workflow, package only into CLAUDE_PLUGIN_DATA/custom-sources, prepare the private health clone, and launch it immediately. Do not modify CODEX_HOME/pets.'
+    }
+    else {
+        $systemMessage = "Codex pet health could not start: $rawMessage"
+    }
+    [Console]::Out.WriteLine(([ordered]@{ systemMessage = $systemMessage } | ConvertTo-Json -Compress))
     exit 0
 }

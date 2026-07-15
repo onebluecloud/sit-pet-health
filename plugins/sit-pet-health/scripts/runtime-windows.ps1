@@ -584,25 +584,12 @@ try {
 
     function Can-Remind {
         param([ValidateSet('health', 'codex')][string]$Kind)
-        $cutoff = [DateTime]::UtcNow.AddHours(-1)
-        $propertyName = if ($Kind -eq 'codex') { 'codexReminderHistoryUtc' } else { 'healthReminderHistoryUtc' }
-        $limit = if ($Kind -eq 'codex') { [int]$config.codexRemindersPerHour } else { [int]$config.healthRemindersPerHour }
-        $recent = @()
-        foreach ($value in @($state.$propertyName)) {
-            try {
-                $date = [DateTime]::Parse([string]$value).ToUniversalTime()
-                if ($date -gt $cutoff) { $recent += $date.ToString('o') }
-            }
-            catch { }
-        }
-        $state.$propertyName = $recent
-        return $recent.Count -lt $limit
+        return Test-SitPetCanRemind -State $state -Kind $Kind -Config $config
     }
 
     function Record-Reminder {
         param([ValidateSet('health', 'codex')][string]$Kind)
-        $propertyName = if ($Kind -eq 'codex') { 'codexReminderHistoryUtc' } else { 'healthReminderHistoryUtc' }
-        $state.$propertyName = @($state.$propertyName) + @([DateTime]::UtcNow.ToString('o'))
+        Add-SitPetReminder -State $state -Kind $Kind
     }
 
     function Show-Reminder {
@@ -630,30 +617,30 @@ try {
 
     $menuXaml = @'
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="288" Background="Transparent">
-  <Border Margin="8" Padding="14,13,14,12" CornerRadius="8" Background="#FCFAF7"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="258" Background="Transparent">
+  <Border Margin="6" Padding="12,11,12,10" CornerRadius="8" Background="#FCFAF7"
           BorderBrush="#E8DDD3" BorderThickness="1">
     <Border.Effect>
       <DropShadowEffect Color="#4A372B" BlurRadius="18" ShadowDepth="4" Opacity="0.20"/>
     </Border.Effect>
     <Border.Resources>
       <Style TargetType="Button">
-        <Setter Property="Height" Value="36"/>
-        <Setter Property="Margin" Value="0,1"/>
-        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="8,0"/>
         <Setter Property="Foreground" Value="#514943"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
-        <Setter Property="FontSize" Value="12.5"/>
+        <Setter Property="FontSize" Value="11.5"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="Button">
               <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="6">
-                <Grid Margin="10,0">
-                  <Grid.ColumnDefinitions><ColumnDefinition Width="26"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                   <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                <Grid Margin="8,0">
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                   <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="14"
                              Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
                   <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </Grid>
@@ -670,31 +657,27 @@ try {
     <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <Border x:Name="StatusDot" Width="9" Height="9" Margin="0,2,9,0" CornerRadius="5" Background="#77B69E" VerticalAlignment="Top"/>
+        <Border x:Name="StatusDot" Width="8" Height="8" Margin="0,3,8,0" CornerRadius="4" Background="#77B69E" VerticalAlignment="Top"/>
         <StackPanel Grid.Column="1">
-          <TextBlock x:Name="MenuTitle" FontFamily="Microsoft YaHei UI" FontSize="14" FontWeight="SemiBold"
-                     Foreground="#443D38" TextTrimming="CharacterEllipsis" MaxWidth="160"/>
-          <TextBlock x:Name="MenuSubtitle" Margin="0,3,0,0" FontFamily="Microsoft YaHei UI" FontSize="10.5" Foreground="#968A81"/>
+          <TextBlock x:Name="MenuTitle" FontFamily="Microsoft YaHei UI" FontSize="13" FontWeight="SemiBold"
+                     Foreground="#443D38" TextTrimming="CharacterEllipsis" MaxWidth="142"/>
+          <TextBlock x:Name="MenuSubtitle" Margin="0,2,0,0" FontFamily="Microsoft YaHei UI" FontSize="9.5" Foreground="#968A81"/>
         </StackPanel>
-        <TextBlock x:Name="VitalityText" Grid.Column="2" FontFamily="Microsoft YaHei UI" FontSize="11"
+        <TextBlock x:Name="VitalityText" Grid.Column="2" FontFamily="Microsoft YaHei UI" FontSize="10"
                    FontWeight="SemiBold" Foreground="#6B625C" VerticalAlignment="Top"/>
       </Grid>
-      <Border Margin="0,11,0,0" Height="6" CornerRadius="3" Background="#EDE7E1">
-        <Border x:Name="VitalityFill" Width="236" HorizontalAlignment="Left" CornerRadius="3" Background="#77B69E"/>
+      <Border Margin="0,8,0,0" Height="5" CornerRadius="3" Background="#EDE7E1">
+        <Border x:Name="VitalityFill" Width="222" HorizontalAlignment="Left" CornerRadius="3" Background="#77B69E"/>
       </Border>
-      <UniformGrid Columns="3" Margin="0,12,0,11">
-        <StackPanel><TextBlock x:Name="SeatedValue" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="#514943"/><TextBlock x:Name="SeatedLabel" Margin="0,2,0,0" HorizontalAlignment="Center" FontSize="9.5" Foreground="#9B8F86"/></StackPanel>
-        <StackPanel><TextBlock x:Name="BreakValue" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="#514943"/><TextBlock x:Name="BreakLabel" Margin="0,2,0,0" HorizontalAlignment="Center" FontSize="9.5" Foreground="#9B8F86"/></StackPanel>
-        <StackPanel><TextBlock x:Name="ListenedValue" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="#514943"/><TextBlock x:Name="ListenedLabel" Margin="0,2,0,0" HorizontalAlignment="Center" FontSize="9.5" Foreground="#9B8F86"/></StackPanel>
-      </UniformGrid>
-      <Border Height="1" Margin="0,0,0,5" Background="#E9E0D8"/>
+      <TextBlock x:Name="StatsText" Margin="0,8,0,8" FontFamily="Microsoft YaHei UI" FontSize="9.5" Foreground="#897D75"/>
+      <Border Height="1" Margin="0,0,0,4" Background="#E9E0D8"/>
       <Button x:Name="PauseButton" Tag="&#xE769;"/>
       <Button x:Name="PauseTodayButton" Tag="&#xE787;"/>
       <Button x:Name="SettingsButton" Tag="&#xE713;"/>
       <Button x:Name="ShareButton" Tag="&#xE72D;"/>
       <Button x:Name="ResetPositionButton" Tag="&#xE707;"/>
       <Button x:Name="ResetScaleButton" Tag="&#xE73F;"/>
-      <Border Height="1" Margin="0,5" Background="#E9E0D8"/>
+      <Border Height="1" Margin="0,4" Background="#E9E0D8"/>
       <Button x:Name="ExitButton" Tag="&#xE8BB;" Foreground="#A95F58"/>
     </StackPanel>
   </Border>
@@ -720,12 +703,7 @@ try {
     $statusDot = $menuCard.FindName('StatusDot')
     $vitalityText = $menuCard.FindName('VitalityText')
     $vitalityFill = $menuCard.FindName('VitalityFill')
-    $seatedValue = $menuCard.FindName('SeatedValue')
-    $seatedLabel = $menuCard.FindName('SeatedLabel')
-    $breakValue = $menuCard.FindName('BreakValue')
-    $breakLabel = $menuCard.FindName('BreakLabel')
-    $listenedValue = $menuCard.FindName('ListenedValue')
-    $listenedLabel = $menuCard.FindName('ListenedLabel')
+    $statsText = $menuCard.FindName('StatsText')
     $pauseButton = $menuCard.FindName('PauseButton')
     $pauseTodayButton = $menuCard.FindName('PauseTodayButton')
     $settingsButton = $menuCard.FindName('SettingsButton')
@@ -734,9 +712,6 @@ try {
     $resetScaleButton = $menuCard.FindName('ResetScaleButton')
     $exitButton = $menuCard.FindName('ExitButton')
 
-    $seatedLabel.Text = [string]$dialogues.ui.menuSeated
-    $breakLabel.Text = [string]$dialogues.ui.breaks
-    $listenedLabel.Text = [string]$dialogues.ui.menuListened
     $resetPositionButton.Content = [string]$dialogues.ui.resetPosition
     $resetScaleButton.Content = [string]$dialogues.ui.resetScale
     $exitButton.Content = [string]$dialogues.ui.exit
@@ -759,13 +734,11 @@ try {
             ([string]$dialogues.ui.menuSeatedFormat).Replace('{minutes}', [string]$minutes)
         }
         $vitalityText.Text = ([string]$dialogues.ui.menuVitalityFormat).Replace('{vitality}', [string][math]::Round([double]$state.vitality))
-        $vitalityFill.Width = 236 * ([math]::Max(0, [math]::Min(100, [double]$state.vitality)) / 100)
+        $vitalityFill.Width = 222 * ([math]::Max(0, [math]::Min(100, [double]$state.vitality)) / 100)
         $brush = Get-LevelBrush
         $vitalityFill.Background = $brush
         $statusDot.Background = $brush
-        $seatedValue.Text = [string]$minutes
-        $breakValue.Text = [string][int]$state.fullBreaks
-        $listenedValue.Text = [string][int]$state.listenedBreaks
+        $statsText.Text = "久坐 $minutes 分  $([char]0x00B7)  离开 $([int]$state.fullBreaks)  $([char]0x00B7)  听劝 $([int]$state.listenedBreaks)"
         $isPaused = Test-SitPetPaused
         $pauseButton.Content = if ($isPaused) { [string]$dialogues.ui.resume } else { [string]$dialogues.ui.pause }
         $pauseButton.Tag = if ($isPaused) { [string][char]0xE768 } else { [string][char]0xE769 }
@@ -955,10 +928,11 @@ try {
         $transition = Update-SitPetCodexSessions -State $state -EventName $eventName -SessionHash $sessionHash -StaleSeconds ([double]$config.codexSessionStaleSeconds)
         if ($eventName -in @('UserPromptSubmit', 'PermissionRequest')) {
             if ($transition.BecameRunning -and [double]$state.sedentarySeconds -ge [double]$config.codexOpportunitySeconds -and $script:lastIdleSeconds -lt [double]$config.activeIdleCutoffSeconds) {
-                $state.opportunityUntilUtc = [DateTime]::UtcNow.AddMinutes(15).ToString('o')
-                $state.opportunityPrompted = $true
                 $key = if ([int]$state.listenedStreak -gt 0) { 'taskStartListened' } elseif ([int]$state.ignoredOpportunities -gt 1) { 'taskStartIgnored' } else { 'taskStartFirst' }
-                [void](Show-Reminder -Key $key -Seconds 9 -Kind 'codex')
+                if (Show-Reminder -Key $key -Seconds 9 -Kind 'codex') {
+                    $state.opportunityUntilUtc = [DateTime]::UtcNow.AddSeconds([double]$config.codexOpportunityWindowSeconds).ToString('o')
+                    $state.opportunityPrompted = $true
+                }
             }
         }
         elseif ($eventName -eq 'Stop' -and $transition.BecameIdle) {

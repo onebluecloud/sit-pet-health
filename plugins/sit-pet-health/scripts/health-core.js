@@ -125,6 +125,29 @@ function stepHealth(state, deltaSeconds, idleSeconds, isPaused, config) {
   };
 }
 
-const api = { levelFor, vitalityFor, newState, stepHealth, updateCodexSessions };
+function canRemind(state, kind, config, nowValue) {
+  const now = nowValue ? new Date(nowValue) : new Date();
+  const nowMs = now.getTime();
+  const cutoff = nowMs - 3600000;
+  const property = kind === "codex" ? "codexReminderHistoryUtc" : "healthReminderHistoryUtc";
+  const kindLimit = kind === "codex" ? Number(config.codexRemindersPerHour) : Number(config.healthRemindersPerHour);
+  state[property] = Array.from(state[property] || []).filter((value) => Date.parse(value) > cutoff);
+  state.reminderHistoryUtc = Array.from(state.reminderHistoryUtc || []).filter((value) => Date.parse(value) > cutoff);
+  if (state[property].length >= kindLimit || state.reminderHistoryUtc.length >= Number(config.remindersPerHour)) return false;
+  if (state.reminderHistoryUtc.length) {
+    const latest = Math.max(...state.reminderHistoryUtc.map((value) => Date.parse(value)));
+    if (nowMs - latest < Number(config.reminderMinGapSeconds) * 1000) return false;
+  }
+  return true;
+}
+
+function recordReminder(state, kind, nowValue) {
+  const property = kind === "codex" ? "codexReminderHistoryUtc" : "healthReminderHistoryUtc";
+  const timestamp = (nowValue ? new Date(nowValue) : new Date()).toISOString();
+  state[property] = Array.from(state[property] || []).concat(timestamp);
+  state.reminderHistoryUtc = Array.from(state.reminderHistoryUtc || []).concat(timestamp);
+}
+
+const api = { levelFor, vitalityFor, newState, stepHealth, updateCodexSessions, canRemind, recordReminder };
 if (typeof module !== "undefined" && module.exports) module.exports = api;
 if (typeof globalThis !== "undefined") globalThis.SitPetHealth = api;

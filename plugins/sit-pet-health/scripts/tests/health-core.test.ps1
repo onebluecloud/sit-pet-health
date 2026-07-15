@@ -60,4 +60,15 @@ $transition = Update-SitPetCodexSessions -State $state -EventName 'Stop' -Sessio
 Assert-Equal $transition.BecameIdle $true 'last concurrent stop becomes idle'
 Assert-Equal $transition.ActiveCount 0 'all sessions stopped'
 
+$state = New-SitPetState
+$start = [DateTime]'2026-07-14T00:00:00Z'
+Assert-Equal (Test-SitPetCanRemind -State $state -Kind health -Config $config -NowUtc $start) $true 'first reminder allowed'
+Add-SitPetReminder -State $state -Kind health -NowUtc $start
+Assert-Equal (Test-SitPetCanRemind -State $state -Kind codex -Config $config -NowUtc $start.AddMinutes(5)) $false 'minimum reminder gap'
+Assert-Equal (Test-SitPetCanRemind -State $state -Kind codex -Config $config -NowUtc $start.AddMinutes(10)) $true 'reminder allowed after gap'
+Add-SitPetReminder -State $state -Kind codex -NowUtc $start.AddMinutes(10)
+Add-SitPetReminder -State $state -Kind health -NowUtc $start.AddMinutes(20)
+Assert-Equal (Test-SitPetCanRemind -State $state -Kind codex -Config $config -NowUtc $start.AddMinutes(30)) $false 'global reminder cap'
+Assert-Equal (Test-SitPetCanRemind -State $state -Kind codex -Config $config -NowUtc $start.AddHours(2)) $true 'rolling reminder window expires'
+
 Write-Output 'health-core-powershell: ok'

@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
-const { levelFor, vitalityFor, newState, stepHealth, updateCodexSessions } = require("../health-core.js");
+const { levelFor, vitalityFor, newState, stepHealth, updateCodexSessions, canRemind, recordReminder } = require("../health-core.js");
 const config = {
   graceSeconds: 1800,
   lazySeconds: 3600,
@@ -11,6 +11,10 @@ const config = {
   partialBreakStartSeconds: 60,
   activeIdleCutoffSeconds: 60,
   partialRecoveryRate: 2,
+  remindersPerHour: 3,
+  reminderMinGapSeconds: 600,
+  healthRemindersPerHour: 3,
+  codexRemindersPerHour: 2,
 };
 
 assert.deepEqual(
@@ -79,5 +83,15 @@ sessions.activeCodexSessions = [{ sessionHash: "stale", lastEventUtc: "2026-07-1
 transition = updateCodexSessions(sessions, "UserPromptSubmit", "fresh", "2026-07-14T00:00:00.000Z", 3600);
 assert.equal(transition.activeCount, 1);
 assert.equal(sessions.activeCodexSessions[0].sessionHash, "fresh");
+
+const reminders = newState("2026-07-14T00:00:00.000Z");
+assert.equal(canRemind(reminders, "health", config, "2026-07-14T00:00:00.000Z"), true);
+recordReminder(reminders, "health", "2026-07-14T00:00:00.000Z");
+assert.equal(canRemind(reminders, "codex", config, "2026-07-14T00:05:00.000Z"), false);
+assert.equal(canRemind(reminders, "codex", config, "2026-07-14T00:10:00.000Z"), true);
+recordReminder(reminders, "codex", "2026-07-14T00:10:00.000Z");
+recordReminder(reminders, "health", "2026-07-14T00:20:00.000Z");
+assert.equal(canRemind(reminders, "codex", config, "2026-07-14T00:30:00.000Z"), false);
+assert.equal(canRemind(reminders, "codex", config, "2026-07-14T02:00:00.000Z"), true);
 
 console.log("health-core: ok");

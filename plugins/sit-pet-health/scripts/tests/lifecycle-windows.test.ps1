@@ -7,6 +7,7 @@ $ErrorActionPreference = 'Stop'
 
 $pluginRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $launch = Join-Path $pluginRoot 'scripts\launch-windows.ps1'
+$hook = Join-Path $pluginRoot 'scripts\hook-windows.ps1'
 $uninstall = Join-Path $pluginRoot 'scripts\uninstall-windows.ps1'
 $resolved = [System.IO.Path]::GetFullPath($TestRoot)
 $allowedRoot = [System.IO.Path]::GetFullPath($(if (-not [string]::IsNullOrWhiteSpace($env:SIT_PET_TEST_ROOT)) { $env:SIT_PET_TEST_ROOT } elseif (-not [string]::IsNullOrWhiteSpace($env:RUNNER_TEMP)) { $env:RUNNER_TEMP } else { Join-Path ([System.IO.Path]::GetTempPath()) 'sit-pet-tests' })).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
@@ -20,6 +21,24 @@ try {
     try { $null = & $uninstall -PluginData (Join-Path (Split-Path -Parent $resolved) 'unsafe') }
     catch { $rejected = $_.Exception.Message -match 'Refusing to remove' }
     if (-not $rejected) { throw 'Unsafe uninstall target was accepted.' }
+
+    $emptyCodexHome = Join-Path (Split-Path -Parent $resolved) 'sit-pet-empty-codex-home'
+    $emptyPluginData = Join-Path (Split-Path -Parent $resolved) 'sit-pet-empty-plugin-data'
+    [System.IO.Directory]::CreateDirectory($emptyCodexHome) | Out-Null
+    [System.IO.Directory]::CreateDirectory($emptyPluginData) | Out-Null
+    $previousRoot = $env:CLAUDE_PLUGIN_ROOT; $previousData = $env:CLAUDE_PLUGIN_DATA; $previousCodex = $env:CODEX_HOME; $previousTest = $env:SIT_PET_TEST_MODE
+    try {
+        $env:CLAUDE_PLUGIN_ROOT = $pluginRoot
+        $env:CLAUDE_PLUGIN_DATA = $emptyPluginData
+        $env:CODEX_HOME = $emptyCodexHome
+        $env:SIT_PET_TEST_MODE = '1'
+        $hookResult = ('{"hook_event_name":"SessionStart","session_id":"empty"}' | & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $hook) | ConvertFrom-Json
+        if ([string]$hookResult.systemMessage -notmatch 'one-sentence pet description or a reference image') { throw 'No-pet hook did not ask Codex to create a private pet.' }
+    }
+    finally {
+        $env:CLAUDE_PLUGIN_ROOT = $previousRoot; $env:CLAUDE_PLUGIN_DATA = $previousData; $env:CODEX_HOME = $previousCodex; $env:SIT_PET_TEST_MODE = $previousTest
+        Remove-Item -LiteralPath $emptyCodexHome,$emptyPluginData -Recurse -Force -ErrorAction SilentlyContinue
+    }
 
     Add-Type -AssemblyName PresentationCore
     Add-Type -AssemblyName WindowsBase

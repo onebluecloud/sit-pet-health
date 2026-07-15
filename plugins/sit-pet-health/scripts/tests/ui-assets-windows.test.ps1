@@ -31,6 +31,8 @@ try {
     Assert-True ($settingsSource -match '<Track x:Name="PART_Track" Height="22" Margin="11,0"') 'The size-slider track no longer reserves room for its thumb.'
     Assert-True ($runtimeSource -match 'TemplateBinding Tag\}" FontFamily="Segoe MDL2 Assets"') 'The status menu is not using the Fluent icon font.'
     Assert-True ($runtimeSource -notmatch 'Tag="&#x2316;"|Tag="&#x2197;"|Tag="&#x00D7;"') 'The status menu still contains mixed-font fallback icons.'
+    Assert-True ($runtimeSource -match 'Width="258"' -and $runtimeSource -match 'x:Name="StatsText"') 'The compact status menu layout is missing.'
+    Assert-True ($settingsSource -match 'x:Name="NoPetPanel"' -and $settingsSource -match 'x:Name="CopyPetPromptButton"') 'The no-pet first-run state is missing.'
 
     $source = Join-Path $resolved 'custom-sources\ui-pet'
     [System.IO.Directory]::CreateDirectory($source) | Out-Null

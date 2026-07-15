@@ -20,7 +20,7 @@ fi
 
 if [[ "$event_name" == "SessionStart" || ! -f "$plugin_data/current-pet.json" ]]; then
   if ! /bin/zsh "$plugin_root/scripts/prepare-pet-macos.sh" "$plugin_data" >/dev/null; then
-    print '{"systemMessage":"Codex pet health could not prepare a read-only pet clone."}'
+    print '{"systemMessage":"No Codex pet was found. Ask the user for either a one-sentence pet description or a reference image. Then follow the installed upgrade-codex-pet-health Skill and its bundled hatch-pet workflow, package only into CLAUDE_PLUGIN_DATA/custom-sources, prepare the private health clone, and launch it immediately. Do not modify CODEX_HOME/pets."}'
     exit 0
   fi
 fi

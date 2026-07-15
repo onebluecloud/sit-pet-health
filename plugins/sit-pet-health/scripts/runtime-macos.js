@@ -279,10 +279,11 @@ function run(argv) {
     const transition = updateCodexSessions(state, name, String(event.sessionHash || ""), new Date(), Number(config.codexSessionStaleSeconds));
     if (name === "UserPromptSubmit" || name === "PermissionRequest") {
       if (transition.becameRunning && state.sedentarySeconds >= Number(config.codexOpportunitySeconds) && lastIdleSeconds < Number(config.activeIdleCutoffSeconds)) {
-        state.opportunityUntilUtc = new Date(Date.now() + 15 * 60000).toISOString();
-        state.opportunityPrompted = true;
         const key = state.listenedStreak > 0 ? "taskStartListened" : (state.ignoredOpportunities > 1 ? "taskStartIgnored" : "taskStartFirst");
-        showReminder(key, 9, "codex");
+        if (showReminder(key, 9, "codex")) {
+          state.opportunityUntilUtc = new Date(Date.now() + Number(config.codexOpportunityWindowSeconds) * 1000).toISOString();
+          state.opportunityPrompted = true;
+        }
       }
     } else if (name === "Stop" && transition.becameIdle) {
       if (state.opportunityPrompted) {
@@ -370,18 +371,27 @@ function run(argv) {
       .replace(/\{minutes\}/g, String(Math.floor(Number(state.sedentarySeconds) / 60)));
   }
   function canRemind(kind) {
+    const now = Date.now();
     const cutoff = Date.now() - 3600000;
     const property = kind === "codex" ? "codexReminderHistoryUtc" : "healthReminderHistoryUtc";
     const limit = kind === "codex" ? Number(config.codexRemindersPerHour) : Number(config.healthRemindersPerHour);
     state[property] = Array.from(state[property] || []).filter((value) => Date.parse(value) > cutoff);
-    return state[property].length < limit;
+    state.reminderHistoryUtc = Array.from(state.reminderHistoryUtc || []).filter((value) => Date.parse(value) > cutoff);
+    if (state[property].length >= limit || state.reminderHistoryUtc.length >= Number(config.remindersPerHour)) return false;
+    if (state.reminderHistoryUtc.length) {
+      const latest = Math.max.apply(null, state.reminderHistoryUtc.map((value) => Date.parse(value)));
+      if (now - latest < Number(config.reminderMinGapSeconds) * 1000) return false;
+    }
+    return true;
   }
   function showReminder(key, seconds, kind) {
     kind = kind || "health";
     if (!canRemind(kind)) return false;
     showBubble(formatDialogue(key), seconds);
     const property = kind === "codex" ? "codexReminderHistoryUtc" : "healthReminderHistoryUtc";
-    state[property].push(new Date().toISOString());
+    const timestamp = new Date().toISOString();
+    state[property].push(timestamp);
+    state.reminderHistoryUtc.push(timestamp);
     return true;
   }
   function levelName() {

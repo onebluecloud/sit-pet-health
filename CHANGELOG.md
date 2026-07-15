@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0 - 2026-07-14
+
+- Add a first-run no-pet state that asks Codex for a one-sentence concept or reference image and routes creation into plugin-private storage.
+- Enforce a global three-per-hour reminder budget, a ten-minute minimum gap, and a longer bounded Codex opportunity window.
+- Record a Codex break opportunity only when its prompt was actually shown.
+- Replace the oversized Windows status panel with a compact single-line statistics menu.
+
 ## 0.8.1 - 2026-07-14
 
 - Prevent the pet-size slider thumb from being clipped at its minimum value.

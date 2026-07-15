@@ -204,3 +204,40 @@ function Get-SitPetDialogue {
     $index = [math]::Abs($Seed + [int]$State.fullBreaks + ([int]$State.level * 7)) % $templates.Count
     return [string]::Format($templates[$index], $PetName, $minutes)
 }
+
+function Test-SitPetCanRemind {
+    param(
+        [psobject]$State,
+        [ValidateSet('health', 'codex')][string]$Kind,
+        [psobject]$Config,
+        [DateTime]$NowUtc = [DateTime]::UtcNow
+    )
+
+    $now = $NowUtc.ToUniversalTime()
+    $cutoff = $now.AddHours(-1)
+    $propertyName = if ($Kind -eq 'codex') { 'codexReminderHistoryUtc' } else { 'healthReminderHistoryUtc' }
+    $kindLimit = if ($Kind -eq 'codex') { [int]$Config.codexRemindersPerHour } else { [int]$Config.healthRemindersPerHour }
+    $kindRecent = @($State.$propertyName | ForEach-Object { try { [DateTime]::Parse([string]$_).ToUniversalTime() } catch { } } | Where-Object { $_ -gt $cutoff })
+    $globalRecent = @($State.reminderHistoryUtc | ForEach-Object { try { [DateTime]::Parse([string]$_).ToUniversalTime() } catch { } } | Where-Object { $_ -gt $cutoff })
+    $State.$propertyName = @($kindRecent | ForEach-Object { $_.ToString('o') })
+    $State.reminderHistoryUtc = @($globalRecent | ForEach-Object { $_.ToString('o') })
+    if ($kindRecent.Count -ge $kindLimit -or $globalRecent.Count -ge [int]$Config.remindersPerHour) { return $false }
+    if ($globalRecent.Count -gt 0) {
+        $latest = @($globalRecent | Sort-Object -Descending)[0]
+        if (($now - $latest).TotalSeconds -lt [double]$Config.reminderMinGapSeconds) { return $false }
+    }
+    return $true
+}
+
+function Add-SitPetReminder {
+    param(
+        [psobject]$State,
+        [ValidateSet('health', 'codex')][string]$Kind,
+        [DateTime]$NowUtc = [DateTime]::UtcNow
+    )
+
+    $propertyName = if ($Kind -eq 'codex') { 'codexReminderHistoryUtc' } else { 'healthReminderHistoryUtc' }
+    $timestamp = $NowUtc.ToUniversalTime().ToString('o')
+    $State.$propertyName = @($State.$propertyName) + @($timestamp)
+    $State.reminderHistoryUtc = @($State.reminderHistoryUtc) + @($timestamp)
+}

@@ -180,9 +180,20 @@ $xaml = @'
       </Border>
       <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="22,16,22,8">
         <StackPanel>
-          <TextBlock Text="使用哪只宠物" FontSize="12" FontWeight="SemiBold" Foreground="#5A514B"/>
-          <ComboBox x:Name="PetPicker" AutomationProperties.Name="选择宠物" Height="40" Margin="0,7,0,4" Padding="10,0" FontSize="12.5" Background="#FFFFFF" BorderBrush="#DDCFC4"/>
-          <TextBlock Text="只读取官方图集；健康动作生成在插件自己的目录。" FontSize="10" Foreground="#9B8D83"/>
+          <StackPanel x:Name="PetSelectionPanel">
+            <TextBlock Text="使用哪只宠物" FontSize="12" FontWeight="SemiBold" Foreground="#5A514B"/>
+            <ComboBox x:Name="PetPicker" AutomationProperties.Name="选择宠物" Height="40" Margin="0,7,0,4" Padding="10,0" FontSize="12.5" Background="#FFFFFF" BorderBrush="#DDCFC4"/>
+            <TextBlock Text="只读取官方图集；健康动作生成在插件自己的目录。" FontSize="10" Foreground="#9B8D83"/>
+          </StackPanel>
+
+          <Border x:Name="NoPetPanel" Visibility="Collapsed" Padding="16" CornerRadius="12" Background="#FFF3EC" BorderBrush="#EBCFC1" BorderThickness="1">
+            <Grid>
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <TextBlock Text="还没有宠物" FontSize="14" FontWeight="SemiBold" Foreground="#4F453F"/>
+              <TextBlock Grid.Row="1" Margin="0,7,0,0" Text="回到 Codex，发一句宠物描述或一张参考图。我会生成完整动作图集，并只保存在这个 Skill 的私有目录。" FontSize="10.5" LineHeight="17" Foreground="#81746B" TextWrapping="Wrap"/>
+              <Button x:Name="CopyPetPromptButton" Grid.Row="2" Width="126" Height="34" Margin="0,12,0,0" HorizontalAlignment="Left" Content="复制创建指令" Background="#E98779" BorderBrush="#E98779" Foreground="White" FontWeight="SemiBold"/>
+            </Grid>
+          </Border>
 
           <Border Margin="0,18,0,0" Padding="15" CornerRadius="12" Background="#FAF3EC" BorderBrush="#EADFD5" BorderThickness="1">
             <StackPanel>
@@ -256,7 +267,7 @@ $xaml = @'
 '@
 
 $window = [System.Windows.Markup.XamlReader]::Parse($xaml)
-foreach ($name in @('TitleBar','HeaderHint','CloseButton','PetPicker','SensitivityPicker','SedentaryPicker','ScaleValue','ScaleSlider','TonePicker','QuietEnabled','QuietStart','QuietEnd','DiagnoseButton','DiagnosticText','StatusText','CancelButton','SaveButton')) {
+foreach ($name in @('TitleBar','HeaderHint','CloseButton','PetSelectionPanel','NoPetPanel','CopyPetPromptButton','PetPicker','SensitivityPicker','SedentaryPicker','ScaleValue','ScaleSlider','TonePicker','QuietEnabled','QuietStart','QuietEnd','DiagnoseButton','DiagnosticText','StatusText','CancelButton','SaveButton')) {
     Set-Variable -Name ($name.Substring(0,1).ToLowerInvariant() + $name.Substring(1)) -Value $window.FindName($name)
 }
 $headerHint.Text = if ($FirstRun) { '先选一只宠物，稍后随时能换。' } else { '宠物、提醒和隐私状态都在这里。' }
@@ -278,7 +289,22 @@ $sensitivityIndex = switch ([string]$config.breakSensitivity) { 'sensitive' { 0 
 $sensitivityPicker.SelectedIndex = $sensitivityIndex
 $sedentaryPicker.SelectedIndex = switch ([string]$config.sedentaryPreset) { 'early' { 0 } 'relaxed' { 2 } default { 1 } }
 $tonePicker.SelectedIndex = switch ([string]$config.dialogueTone) { 'gentle' { 1 } 'dry' { 2 } default { 0 } }
-if ($pets.Count -eq 0) { Set-Status -Text '没有找到可用宠物。请先在 Codex 里运行 /hatch。' -Color '#B35F55' }
+if ($pets.Count -eq 0) {
+    $petSelectionPanel.Visibility = [System.Windows.Visibility]::Collapsed
+    $noPetPanel.Visibility = [System.Windows.Visibility]::Visible
+    $headerHint.Text = '描述一句或发张图，我会帮你创建。'
+    $saveButton.IsEnabled = $false
+    $saveButton.Opacity = 0.45
+    Set-Status -Text '创建完成后，宠物会自动出现在这里。'
+}
+
+$copyPetPromptButton.Add_Click({
+    try {
+        [System.Windows.Clipboard]::SetText('请帮我创建一只自定义 Codex 健康桌宠。我会用一句描述或上传一张参考图片。创建后立即显示，并且不要修改任何已有官方宠物。')
+        Set-Status -Text '创建指令已复制。回到 Codex 粘贴发送即可。' -Color '#668C7B'
+    }
+    catch { Set-Status -Text '复制失败，请回到 Codex 直接描述想要的宠物。' -Color '#B35F55' }
+})
 
 $titleBar.Add_MouseLeftButtonDown({ try { $window.DragMove() } catch { } })
 $window.Add_PreviewKeyDown({
