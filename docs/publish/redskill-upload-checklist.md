@@ -2,7 +2,7 @@
 
 ## 上传文件
 
-- 文件：`sit-pet-health-redskill-v1.0.0.zip`
+- 文件：`rousepet-redskill-v1.1.0.zip`
 - 校验：同时保留 `.zip.sha256`
 - 类型：原创 Skill
 - 一篇笔记只挂载这一份 RedSkill
@@ -18,7 +18,7 @@
 ## 上传后验证
 
 1. 用另一个 Codex 环境获取 RedSkill。
-2. 发送：“安装并立即显示我的 Codex 宠物健康版，保持官方宠物完全不变。”
+2. 发送：“安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。”
 3. 确认安装过程没有访问 GitHub，也没有下载 EXE。
 4. 确认已有官方宠物 SHA-256 安装前后相同。
 5. 确认桌宠立即出现；无宠物时出现创建入口。

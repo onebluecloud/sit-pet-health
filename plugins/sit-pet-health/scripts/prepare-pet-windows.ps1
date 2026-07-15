@@ -368,8 +368,8 @@ try {
 
     $cloneManifest = [ordered]@{
         id = $cloneId
-        displayName = "$displayName Health"
-        description = "A private health clone of $displayName. The source pet remains read-only."
+        displayName = "$displayName · RousePet"
+        description = "A private RousePet copy of $displayName. The source pet remains read-only."
         spriteVersionNumber = if ($height -eq 2288) { 2 } else { 1 }
         spritesheetPath = 'spritesheet.png'
         sitPetHealthClone = [ordered]@{

@@ -1,6 +1,8 @@
-# Codex 宠物健康升级器
+# RousePet
 
-把 `/hatch` 生成的 Codex 宠物只读复制到桌面，并加入久坐、离开电脑和 Codex 任务空窗反馈。它是 Codex Plugin + Skill，不安装独立 EXE，也不会修改已有官方宠物。
+**让你的 Codex 宠物，替你记住起身。**
+
+RousePet 会把 `/hatch` 生成的 Codex 宠物只读复制到桌面，让它随着连续久坐逐渐没精神，在你真正离开电脑后恢复，并在 Codex 接手任务时提醒你利用空窗活动。它是 Codex Plugin + Skill，不安装独立 EXE，也不会修改已有官方宠物。
 
 <p>
   <img src="docs/images/settings-windows.png" alt="宠物与提醒设置" width="48%" />
@@ -21,11 +23,11 @@
 
 ## RedSkill 安装
 
-小红书 RedSkill 版本使用 Release 附件 `sit-pet-health-redskill-v1.0.0.zip`。附件已经包含 Skill、Plugin、Hooks、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。
+小红书 RedSkill 版本使用 Release 附件 `rousepet-redskill-v1.1.0.zip`。附件已经包含 Skill、Plugin、Hooks、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。
 
 把压缩包作为 RedSkill 获取后，对 Codex 说：
 
-> 安装并立即显示我的 Codex 宠物健康版，保持官方宠物完全不变。
+> 安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。
 
 根目录 [SKILL.md](SKILL.md) 会调用包内安装器、注册本地 marketplace、安装 Plugin 并立即启动桌宠。未来会话第一次触发时仍会显示 Codex Hooks 信任审核；该审核不能绕过。
 
@@ -33,7 +35,7 @@
 
 把仓库链接 `https://github.com/onebluecloud/sit-pet-health` 发给 Codex，并说：
 
-> 安装这个 Codex 宠物健康插件，保持我已有宠物完全不变。
+> 安装 RousePet，保持我已有的官方 Codex 宠物完全不变。
 
 Codex 完成安装后会立即启动一次私有复制体。未来会话第一次触发时，Codex 会显示 Hooks 审核；选择“信任全部并继续”后，它才会随 Codex 自动启动。这个审核是 Codex 的安全边界，插件不会绕过。
 
@@ -76,16 +78,16 @@ codex plugin add sit-pet-health@sit-pet-health --json
 ![小红书 7 页发布图组](docs/publish/xiaohongshu/contact-sheet.png)
 
 - 小红书正文、标题和配图顺序：[`docs/publish/xiaohongshu-post.md`](docs/publish/xiaohongshu-post.md)
-- 完整 HTML 发布说明：[`docs/publish/sit-pet-health-xhs-publish-guide.html`](docs/publish/sit-pet-health-xhs-publish-guide.html)
+- 完整 HTML 发布说明：[`docs/publish/rousepet-xhs-publish-guide.html`](docs/publish/rousepet-xhs-publish-guide.html)
 - RedSkill 上传检查单：[`docs/publish/redskill-upload-checklist.md`](docs/publish/redskill-upload-checklist.md)
-- GitHub Release 文案：[`docs/publish/github-release-v1.0.0.md`](docs/publish/github-release-v1.0.0.md)
+- GitHub Release 文案：[`docs/publish/github-release-v1.1.0.md`](docs/publish/github-release-v1.1.0.md)
 - 打包：`PowerShell -ExecutionPolicy Bypass -File scripts/build-redskill-package.ps1`
 
 ## 卸载
 
 对 Codex 说：
 
-> 卸载 Codex 宠物健康升级器，结束桌面窗口并删除它的私有健康数据；保留我的官方宠物。
+> 卸载 RousePet，结束桌面窗口并删除它的私有健康数据；保留我的官方宠物。
 
 Skill 会先校验并结束自己的运行进程，再删除插件私有目录，最后执行 `codex plugin remove`。官方宠物目录不在删除范围内。旧 Windows EXE 原型不属于本主版本。
 

@@ -324,7 +324,7 @@ try {
     Register-AtlasEntry -Entry $profile.held -Name 'held'
 
     $window = New-Object System.Windows.Window
-    $window.Title = 'Codex Pet Health'
+    $window.Title = 'RousePet'
     $window.WindowStyle = [System.Windows.WindowStyle]::None
     $window.ResizeMode = [System.Windows.ResizeMode]::NoResize
     $window.AllowsTransparency = $true
@@ -425,7 +425,7 @@ try {
     $bubblePanel.Children.Add($bubbleTail) | Out-Null
 
     $bubbleWindow = New-Object System.Windows.Window
-    $bubbleWindow.Title = 'Codex Pet Health Message'
+    $bubbleWindow.Title = 'RousePet Message'
     $bubbleWindow.WindowStyle = [System.Windows.WindowStyle]::None
     $bubbleWindow.ResizeMode = [System.Windows.ResizeMode]::NoResize
     $bubbleWindow.AllowsTransparency = $true
@@ -685,7 +685,7 @@ try {
 '@
     $menuCard = [System.Windows.Markup.XamlReader]::Parse($menuXaml)
     $menuWindow = New-Object System.Windows.Window
-    $menuWindow.Title = 'Codex Pet Health Menu'
+    $menuWindow.Title = 'RousePet Menu'
     $menuWindow.WindowStyle = [System.Windows.WindowStyle]::None
     $menuWindow.ResizeMode = [System.Windows.ResizeMode]::NoResize
     $menuWindow.AllowsTransparency = $true
@@ -1070,7 +1070,7 @@ try {
 catch {
     Write-Log "Fatal: $($_.Exception.ToString())"
     try { Write-JsonAtomic -Path (Join-Path $PluginData 'last-error.json') -Value ([ordered]@{ occurredAtUtc = [DateTime]::UtcNow.ToString('o'); component = 'runtime'; message = $_.Exception.Message }) } catch { }
-    if (-not $TestMode) { try { [void][System.Windows.MessageBox]::Show("桌宠启动失败。`n`n$($_.Exception.Message)`n`n可从设置里的运行诊断查看详情。", 'Codex 宠物健康升级器') } catch { } }
+    if (-not $TestMode) { try { [void][System.Windows.MessageBox]::Show("RousePet 启动失败。`n`n$($_.Exception.Message)`n`n可从设置里的运行诊断查看详情。", 'RousePet') } catch { } }
     throw
 }
 finally {

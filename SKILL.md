@@ -1,9 +1,9 @@
 ---
 name: install-sit-pet-health
-description: 从当前 RedSkill 包离线安装、启动、检查或卸载 Codex 宠物健康升级器。用于用户说“安装这个桌宠”“把 Codex 宠物放到桌面”“开启久坐提醒”“宠物没出现”或“卸载健康宠物”时；安装只使用包内 Plugin，不访问 GitHub，不修改官方宠物和 Codex 会话数据。Windows 正式支持，macOS 实验性支持。
+description: 从当前 RedSkill 包离线安装、启动、检查或卸载 RousePet。用于用户说“安装 RousePet”“把 Codex 宠物放到桌面”“开启久坐提醒”“宠物没出现”或“卸载 RousePet”时；安装只使用包内 Plugin，不访问 GitHub，不修改官方宠物和 Codex 会话数据。Windows 正式支持，macOS 实验性支持。
 ---
 
-# 安装 Codex 宠物健康升级器
+# 安装 RousePet
 
 ## 数据边界
 

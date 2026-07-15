@@ -174,7 +174,7 @@ $xaml = @'
       <Grid.RowDefinitions><RowDefinition Height="68"/><RowDefinition Height="*"/><RowDefinition Height="72"/></Grid.RowDefinitions>
       <Border x:Name="TitleBar" Padding="22,0" Background="#FFF7EF" CornerRadius="18,18,0,0">
         <Grid>
-          <StackPanel VerticalAlignment="Center"><TextBlock Text="桌宠设置" FontSize="19" FontWeight="SemiBold" Foreground="#443C37"/><TextBlock x:Name="HeaderHint" Margin="0,3,0,0" FontSize="10.5" Foreground="#9B8D83"/></StackPanel>
+          <StackPanel VerticalAlignment="Center"><TextBlock Text="RousePet 设置" FontSize="19" FontWeight="SemiBold" Foreground="#443C37"/><TextBlock x:Name="HeaderHint" Margin="0,3,0,0" FontSize="10.5" Foreground="#9B8D83"/></StackPanel>
           <Button x:Name="CloseButton" AutomationProperties.Name="关闭设置" ToolTip="关闭" HorizontalAlignment="Right" Width="34" Height="34" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#756A63" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
         </Grid>
       </Border>
@@ -300,7 +300,7 @@ if ($pets.Count -eq 0) {
 
 $copyPetPromptButton.Add_Click({
     try {
-        [System.Windows.Clipboard]::SetText('请帮我创建一只自定义 Codex 健康桌宠。我会用一句描述或上传一张参考图片。创建后立即显示，并且不要修改任何已有官方宠物。')
+        [System.Windows.Clipboard]::SetText('请为 RousePet 创建一只自定义 Codex 桌宠。我会用一句描述或上传一张参考图片。创建后立即显示，并且不要修改任何已有官方宠物。')
         Set-Status -Text '创建指令已复制。回到 Codex 粘贴发送即可。' -Color '#668C7B'
     }
     catch { Set-Status -Text '复制失败，请回到 Codex 直接描述想要的宠物。' -Color '#B35F55' }

@@ -1,7 +1,7 @@
 {
   "name": "sit-pet-health",
-  "version": "1.0.0",
-  "description": "A no-EXE Codex pet health companion that clones local pets read-only, monitors time away from input, and turns Codex wait time into movement prompts.",
+  "version": "1.1.0",
+  "description": "RousePet turns a read-only copy of your Codex pet into a local-first companion that reflects prolonged sitting and celebrates real breaks.",
   "author": {
     "name": "sit-pet contributors"
   },
@@ -9,16 +9,16 @@
   "keywords": ["codex", "pet", "breaks", "wellbeing", "local-first"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Codex 宠物健康升级器",
-    "shortDescription": "不改原宠物，自动把久坐和 Codex 空窗变成桌宠反馈。",
-    "longDescription": "只读复制你的 Codex 宠物，由 Codex Hooks 启动本机脚本窗口；根据键鼠空闲推断离开电脑、久坐阶段和返回恢复，不安装独立 EXE。",
+    "displayName": "RousePet",
+    "shortDescription": "让你的 Codex 宠物替你记住起身。",
+    "longDescription": "RousePet 只读复制你的 Codex 宠物，根据键鼠空闲推断久坐、离开电脑和返回恢复，并在 Codex 接手任务时提醒你利用空窗活动；不安装独立 EXE。",
     "developerName": "sit-pet contributors",
     "category": "Productivity",
     "capabilities": ["Interactive", "Local"],
     "defaultPrompt": [
-      "升级并显示我的 Codex 宠物健康版",
-      "检查我的健康宠物为什么没有提醒",
-      "给我的健康宠物换一个官方宠物复制体"
+      "安装并显示 RousePet，保持我的官方宠物不变",
+      "检查 RousePet 为什么没有提醒",
+      "给 RousePet 换一只官方宠物复制体"
     ],
     "brandColor": "#E98272"
   }

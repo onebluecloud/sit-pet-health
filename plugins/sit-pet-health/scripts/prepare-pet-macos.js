@@ -199,8 +199,8 @@ function run(argv) {
 
     writeJsonAtomic(staging + "/pet.json", {
       id: cloneId,
-      displayName: displayName + " Health",
-      description: "A private health clone of " + displayName + ". The source pet remains read-only.",
+      displayName: displayName + " · RousePet",
+      description: "A private RousePet copy of " + displayName + ". The source pet remains read-only.",
       spriteVersionNumber: height === 2288 ? 2 : 1,
       spritesheetPath: "spritesheet.png",
       sitPetHealthClone: { version: 1, sourceSlug: selected.slug, sourceSpriteSha256: sourceHashBefore },

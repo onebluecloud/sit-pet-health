@@ -1,4 +1,4 @@
 interface:
-  display_name: "Codex 宠物健康升级器"
-  short_description: "不改原宠物，根据键鼠空闲推断久坐与离开电脑"
-  default_prompt: "升级并显示我的 Codex 宠物健康版，保持原宠物完全不变。"
+  display_name: "RousePet"
+  short_description: "让 Codex 宠物替你记住起身"
+  default_prompt: "安装并显示 RousePet，保持我的官方宠物完全不变。"

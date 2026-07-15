@@ -1,4 +1,4 @@
 interface:
-  display_name: "Codex 宠物健康升级器"
-  short_description: "从 RedSkill 包安装无 EXE 久坐健康桌宠"
-  default_prompt: "安装并立即显示我的 Codex 宠物健康版，保持官方宠物完全不变。"
+  display_name: "RousePet"
+  short_description: "让 Codex 宠物替你记住起身"
+  default_prompt: "安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。"

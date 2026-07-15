@@ -1,9 +1,9 @@
 ---
 name: upgrade-codex-pet-health
-description: 安装、启动、检查、换宠物或卸载无 EXE 的 Codex 宠物健康升级器；只读复制本地 /hatch 宠物，由 Codex Plugin Hooks 根据键鼠空闲推断离开电脑、监测久坐阶段和 Codex 任务空窗。也用于用户说“把我的 Codex 宠物放到桌面”“久坐提醒”“宠物健康版”“宠物没出现/没回血/没提醒”或要求用 prompt/图片先创建宠物再升级时。Windows 为正式支持，macOS 为实验性支持；不用于修改、覆盖或修复官方宠物原文件，也不把元气解释为真实寿命或医疗指标。
+description: 安装、启动、检查、换宠物或卸载无 EXE 的 RousePet；只读复制本地 /hatch 宠物，由 Codex Plugin Hooks 根据键鼠空闲推断离开电脑、监测久坐阶段和 Codex 任务空窗。也用于用户说“安装 RousePet”“把我的 Codex 宠物放到桌面”“久坐提醒”“宠物没出现/没回血/没提醒”或要求用 prompt/图片先创建宠物时。Windows 为正式支持，macOS 为实验性支持；不用于修改、覆盖或修复官方宠物原文件，也不把元气解释为真实寿命或医疗指标。
 ---
 
-# Codex 宠物健康升级器
+# RousePet
 
 ## 原则
 

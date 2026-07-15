@@ -1,5 +1,5 @@
 param(
-    [string]$Version = '1.0.0',
+    [string]$Version = '1.1.0',
     [string]$OutputDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) 'dist')
 )
 
@@ -9,7 +9,7 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $OutputDirectory = [System.IO.Path]::GetFullPath($OutputDirectory)
 $stageParent = Join-Path $OutputDirectory 'stage'
-$packageName = "sit-pet-health-redskill-v$Version"
+$packageName = "rousepet-redskill-v$Version"
 $packageRoot = Join-Path $stageParent $packageName
 $zipPath = Join-Path $OutputDirectory "$packageName.zip"
 

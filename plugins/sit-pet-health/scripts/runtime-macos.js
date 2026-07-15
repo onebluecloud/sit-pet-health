@@ -170,7 +170,7 @@ function run(argv) {
     },
   });
   const menuDelegate = $[delegateName].alloc.init;
-  const menu = $.NSMenu.alloc.initWithTitle("Codex Pet Health");
+  const menu = $.NSMenu.alloc.initWithTitle("RousePet");
   const statusItem = addMenuItem(menu, "", null, false);
   const statsItem = addMenuItem(menu, "", null, false);
   menu.addItem($.NSMenuItem.separatorItem);

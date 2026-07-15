@@ -64,7 +64,7 @@ $canvas = New-Object System.Windows.Controls.Canvas
 $canvas.Width = 1080; $canvas.Height = 1350; $canvas.Background = New-Brush '#FFF8F0'
 
 $topAccent = New-Object System.Windows.Controls.Border; $topAccent.Width = 1080; $topAccent.Height = 18; $topAccent.Background = New-Brush '#E98779'; [void]$canvas.Children.Add($topAccent)
-$brand = New-Text -Text 'CODEX PET HEALTH' -Size 20 -Color '#A06F62' -Weight SemiBold; [System.Windows.Controls.Canvas]::SetLeft($brand,80); [System.Windows.Controls.Canvas]::SetTop($brand,72); [void]$canvas.Children.Add($brand)
+$brand = New-Text -Text 'ROUSEPET · CODEX DESKTOP COMPANION' -Size 20 -Color '#A06F62' -Weight SemiBold; [System.Windows.Controls.Canvas]::SetLeft($brand,80); [System.Windows.Controls.Canvas]::SetTop($brand,72); [void]$canvas.Children.Add($brand)
 $title = New-Text -Text ("{0} 的今日状态" -f [string]$current.displayName) -Size 48 -Color '#443C37' -Weight SemiBold; [System.Windows.Controls.Canvas]::SetLeft($title,78); [System.Windows.Controls.Canvas]::SetTop($title,112); [void]$canvas.Children.Add($title)
 $subtitle = New-Text -Text '把 Codex 等待时间，换成一次真正离开电脑。' -Size 23 -Color '#8D8178'; [System.Windows.Controls.Canvas]::SetLeft($subtitle,80); [System.Windows.Controls.Canvas]::SetTop($subtitle,188); [void]$canvas.Children.Add($subtitle)
 

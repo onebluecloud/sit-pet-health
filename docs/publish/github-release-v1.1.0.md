@@ -1,9 +1,12 @@
-# Codex 宠物健康升级器 v1.0.0
+# RousePet v1.1.0
 
-这是首个面向公开使用的自包含 RedSkill 版本。它把 Skill、Codex Plugin、Hooks 和本地运行脚本放进同一个压缩包，用户从小红书获取后即可让 Codex 本地安装，不需要跳转 GitHub，也不安装独立 EXE。
+RousePet 让用户已有的 Codex 宠物替他们记住起身：连续久坐时逐级没精神，真正离开电脑后恢复，Codex 接手任务时则提醒用户利用空窗活动。
 
-## 新增
+这是采用正式品牌名后的自包含 RedSkill 版本。Skill、Codex Plugin、Hooks 和本地运行脚本都在同一个压缩包中，用户从小红书获取后即可让 Codex 本地安装，不需要跳转 GitHub，也不安装独立 EXE。
 
+## 本版变化
+
+- 对外品牌与界面统一为 RousePet。
 - 根级 RedSkill 入口与安装指令。
 - Windows/macOS 本地 marketplace 安装器。
 - 安装完成后立即启动桌宠。
@@ -25,9 +28,9 @@
 
 ## Release 附件
 
-- `sit-pet-health-redskill-v1.0.0.zip`
-- `sit-pet-health-redskill-v1.0.0.zip.sha256`
+- `rousepet-redskill-v1.1.0.zip`
+- `rousepet-redskill-v1.1.0.zip.sha256`
 
 安装提示词：
 
-> 安装并立即显示我的 Codex 宠物健康版，保持官方宠物完全不变。
+> 安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。
