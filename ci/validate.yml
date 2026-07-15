@@ -1,0 +1,46 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  portable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate JSON and JavaScript syntax
+        run: |
+          node -e "for (const p of ['.agents/plugins/marketplace.json','plugins/sit-pet-health/.codex-plugin/plugin.json','plugins/sit-pet-health/assets/default-config.json','plugins/sit-pet-health/assets/dialogues.zh-CN.json','plugins/sit-pet-health/assets/action-layouts.json','plugins/sit-pet-health/hooks/hooks.json']) JSON.parse(require('fs').readFileSync(p,'utf8'))"
+          node --check plugins/sit-pet-health/scripts/health-core.js
+          node --check plugins/sit-pet-health/scripts/runtime-macos.js
+          node --check plugins/sit-pet-health/scripts/prepare-pet-macos.js
+          node plugins/sit-pet-health/scripts/tests/health-core.test.js
+      - name: Validate shell scripts
+        run: bash -n plugins/sit-pet-health/scripts/*.sh
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Windows PowerShell 5 scripts
+        shell: powershell
+        run: |
+          $errorsFound = $false
+          Get-ChildItem plugins/sit-pet-health/scripts -Filter *.ps1 -Recurse | ForEach-Object {
+            $tokens = $null; $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errors)
+            if ($errors.Count) { $errorsFound = $true; $errors | ForEach-Object { Write-Error "$($_.Extent.StartLineNumber): $($_.Message)" } }
+          }
+          if ($errorsFound) { exit 1 }
+      - name: Run Windows regressions
+        shell: powershell
+        run: |
+          $root = Join-Path $PWD 'plugins\sit-pet-health'
+          & "$root\scripts\tests\health-core.test.ps1"
+          & "$root\scripts\tests\prepare-pet-windows.test.ps1"
+          & "$root\scripts\tests\ui-assets-windows.test.ps1"
+          & "$root\scripts\tests\lifecycle-windows.test.ps1"

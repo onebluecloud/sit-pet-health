@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "layouts": [
+    {
+      "id": "codex-standard-192x208-v1",
+      "width": 1536,
+      "heights": [1872, 2288],
+      "frameWidth": 192,
+      "frameHeight": 208,
+      "actions": {
+        "idle": { "row": 0, "columns": [0, 1, 2, 3, 4, 5, 0, 1], "frames": 6, "durationMs": 1680 },
+        "waiting": { "row": 6, "columns": [0, 1, 2, 3, 4, 5, 0, 1], "frames": 6, "durationMs": 3000 },
+        "tired": { "row": 5, "columns": [0, 1, 2, 1, 2, 0, 1, 2], "frames": 3, "durationMs": 3600 },
+        "sick": { "row": 5, "columns": [3, 4, 5, 4, 5, 3, 4, 5], "frames": 3, "durationMs": 4500 },
+        "rest": { "row": 5, "columns": [6, 7, 7, 7, 7, 7, 7, 7], "frames": 2, "durationMs": 6000 },
+        "celebrate": { "row": 4, "columns": [0, 1, 2, 3, 4, 3, 2, 1], "frames": 5, "durationMs": 1400 },
+        "held": { "row": 3, "columns": [0, 1, 2, 3, 2, 1, 0, 1], "frames": 4, "durationMs": 1900 }
+      },
+      "fallbacks": {
+        "waiting": ["idle"],
+        "tired": ["waiting", "idle"],
+        "sick": ["tired", "waiting", "idle"],
+        "rest": ["sick", "tired", "waiting", "idle"],
+        "celebrate": ["idle"],
+        "held": ["idle"]
+      }
+    }
+  ]
+}

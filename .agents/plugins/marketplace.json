@@ -1,0 +1,21 @@
+{
+  "name": "sit-pet-health",
+  "interface": {
+    "displayName": "Codex Pet Health"
+  },
+  "plugins": [
+    {
+      "name": "sit-pet-health",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sit-pet-health"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL",
+        "products": ["CODEX"]
+      },
+      "category": "Productivity"
+    }
+  ]
+}

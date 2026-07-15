@@ -1,0 +1,10 @@
+*.log
+*.tmp
+runtime.pid
+health-state.json
+current-pet.json
+selected-source.json
+config.json
+share/
+pets/
+staging/

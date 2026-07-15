@@ -1,0 +1,11 @@
+Codex pet spritesheets remain the property of their respective users and
+creators. The plugin reads them locally and creates a private derivative copy;
+it does not redistribute user pet assets.
+
+The earlier sit-pet prototype studied petdex (MIT) as architecture reference.
+This no-EXE plugin implementation does not include petdex source code. The
+petdex MIT notice remains preserved in the historical project distribution.
+
+The bundled vendor/hatch-pet skill and deterministic spritesheet scripts are
+provided under the Apache License 2.0. The full license text is retained at
+vendor/hatch-pet/LICENSE.txt.
