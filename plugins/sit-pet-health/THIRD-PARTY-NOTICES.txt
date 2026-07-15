@@ -2,6 +2,10 @@ Codex pet spritesheets remain the property of their respective users and
 creators. The plugin reads them locally and creates a private derivative copy;
 it does not redistribute user pet assets.
 
+Milkybyte images under the repository docs directory are creator-authorized
+product demonstration screenshots. They are not included in the installable
+RedSkill archive and must not be treated as reusable pet source assets.
+
 The earlier sit-pet prototype studied petdex (MIT) as architecture reference.
 This no-EXE plugin implementation does not include petdex source code. The
 petdex MIT notice remains preserved in the historical project distribution.

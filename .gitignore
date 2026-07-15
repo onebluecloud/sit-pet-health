@@ -8,3 +8,4 @@ config.json
 share/
 pets/
 staging/
+dist/
