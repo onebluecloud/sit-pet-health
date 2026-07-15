@@ -65,7 +65,7 @@ try {
     Assert-True ($result.sourceUnchanged -eq $true) 'The sourceUnchanged invariant was not reported.'
 
     $profile = Get-Content -LiteralPath (Join-Path $result.cloneDirectory 'health-profile.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-    Assert-True ([int]$profile.version -eq 2) 'The semantic health profile version was not generated.'
+    Assert-True ([int]$profile.version -eq 3) 'The semantic health profile version was not generated.'
     Assert-True ([string]$profile.actionLayoutId -eq 'codex-standard-192x208-v1') 'The standard Codex semantic action layout was not selected.'
     Assert-True ([int]$profile.sourceHeight -eq 2288) 'V2 height was not preserved.'
     $expectedSemantics = @('idle', 'waiting', 'tired', 'sick', 'rest')
@@ -74,6 +74,9 @@ try {
     }
     Assert-True ([string]$profile.celebrate.semanticAction -eq 'celebrate') 'The celebration semantic action was not preserved.'
     Assert-True ([string]$profile.held.semanticAction -eq 'held') 'The held semantic action was not preserved.'
+    Assert-True ([bool]$result.enhancementRequired) 'A standard pet without explicit health actions did not request a private extension.'
+    Assert-True ((@($result.enhancementActions) -join ',') -eq 'tired,sick,rest') 'The standard pet requested the wrong private health actions.'
+    Assert-True ([string]$profile.healthExtension.status -eq 'required') 'The private health extension request was not recorded.'
     foreach ($file in @('stage-0.png', 'stage-1.png', 'stage-2.png', 'stage-3.png', 'stage-4.png', 'celebrate.png', 'held.png')) {
         Assert-True (Test-Path -LiteralPath (Join-Path $result.cloneDirectory "atlases\$file") -PathType Leaf) "Missing generated atlas $file."
     }
@@ -160,8 +163,34 @@ try {
     foreach ($level in 0..4) {
         Assert-True ([string]$fallbackProfile.stages.PSObject.Properties[[string]$level].Value.semanticAction -eq 'idle') "Stage $level did not fall back to the available idle action."
     }
+    Assert-True ([bool]$fallbackResult.enhancementRequired) 'A fallback-only pet did not request dedicated health actions.'
+    Assert-True ((@($fallbackResult.enhancementActions) -join ',') -eq 'tired,sick,rest') 'The fallback-only pet requested the wrong health actions.'
     Assert-True ([string]$fallbackProfile.celebrate.semanticAction -eq 'idle') 'Celebration did not fall back to idle.'
     Assert-True ([string]$fallbackProfile.held.semanticAction -eq 'idle') 'Held did not fall back to idle.'
+
+    $explicitRoot = Join-Path $resolved 'plugin-explicit\custom-sources\explicit-pet'
+    [System.IO.Directory]::CreateDirectory($explicitRoot) | Out-Null
+    Write-TransparentPng -Path (Join-Path $explicitRoot 'spritesheet.png') -Width 1536 -Height 1872
+    Write-Utf8Json -Path (Join-Path $explicitRoot 'pet.json') -Value ([ordered]@{
+        id = 'explicit-pet'
+        displayName = 'Explicit Pet'
+        spritesheetPath = 'spritesheet.png'
+        sitPetHealthActions = [ordered]@{
+            layoutId = 'explicit-health-actions'
+            frameWidth = 192
+            frameHeight = 208
+            actions = [ordered]@{
+                idle = [ordered]@{ row = 0; columns = @(0, 1, 2, 3, 4, 5); frames = 6; durationMs = 1680 }
+                tired = [ordered]@{ row = 5; columns = @(0, 1, 2); frames = 3; durationMs = 3600 }
+                sick = [ordered]@{ row = 5; columns = @(3, 4, 5); frames = 3; durationMs = 4500 }
+                rest = [ordered]@{ row = 5; columns = @(6, 7); frames = 2; durationMs = 6000 }
+            }
+        }
+    })
+    $explicitResult = (& $prepare -PluginData (Join-Path $resolved 'plugin-explicit') -SourceDirectory $explicitRoot) | ConvertFrom-Json
+    Assert-True (-not [bool]$explicitResult.enhancementRequired) 'A pet with explicit health actions incorrectly requested image generation.'
+    $explicitProfile = Get-Content -LiteralPath (Join-Path $explicitResult.cloneDirectory 'health-profile.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    Assert-True ([string]$explicitProfile.healthExtension.status -eq 'complete') 'Explicit health actions were not marked complete.'
 
     Write-Host 'prepare-pet-windows: ok'
 }

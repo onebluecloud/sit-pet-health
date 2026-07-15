@@ -28,9 +28,13 @@ installed_path="$(print -r -- "$install_json" | /usr/bin/sed -n 's/.*"installedP
 [[ -n "$installed_path" ]] || { print -u2 'Could not read installed plugin path.'; exit 1; }
 
 launched=false
+enhancement_required=false
 if [[ "$skip_launch" != "--skip-launch" ]]; then
-  /bin/zsh "$installed_path/scripts/launch-macos.sh" "$installed_path"
+  launch_json=$(/bin/zsh "$installed_path/scripts/launch-macos.sh" "$installed_path")
+  if [[ "$launch_json" == *'"enhancementRequired":true'* ]]; then
+    enhancement_required=true
+  fi
   launched=true
 fi
 
-print "{\"ok\":true,\"marketplace\":\"$marketplace_name\",\"installedPath\":\"$installed_path\",\"launched\":$launched}"
+print "{\"ok\":true,\"marketplace\":\"$marketplace_name\",\"installedPath\":\"$installed_path\",\"launched\":$launched,\"enhancementRequired\":$enhancement_required}"

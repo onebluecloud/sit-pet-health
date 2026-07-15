@@ -10,6 +10,7 @@ fi
 
 payload=$(/bin/cat)
 current_before=""
+enhancement_required=false
 if [[ -f "$plugin_data/current-pet.json" ]]; then
   current_before=$(/usr/bin/shasum -a 256 "$plugin_data/current-pet.json" | /usr/bin/awk '{print $1}')
 fi
@@ -19,9 +20,12 @@ if ! event_name=$(print -rn -- "$payload" | /usr/bin/osascript -l JavaScript "$p
 fi
 
 if [[ "$event_name" == "SessionStart" || ! -f "$plugin_data/current-pet.json" ]]; then
-  if ! /bin/zsh "$plugin_root/scripts/prepare-pet-macos.sh" "$plugin_data" >/dev/null; then
+  if ! prepare_output=$(/bin/zsh "$plugin_root/scripts/prepare-pet-macos.sh" "$plugin_data"); then
     print '{"systemMessage":"No Codex pet was found. Ask the user for either a one-sentence pet description or a reference image. Then follow the installed upgrade-codex-pet-health Skill and its bundled hatch-pet workflow, package only into CLAUDE_PLUGIN_DATA/custom-sources, prepare the private health clone, and launch it immediately. Do not modify CODEX_HOME/pets."}'
     exit 0
+  fi
+  if [[ "$prepare_output" == *'"enhancementRequired":true'* ]]; then
+    enhancement_required=true
   fi
 fi
 
@@ -41,3 +45,6 @@ if [[ -n "$current_before" && "$current_before" != "$current_after" && -f "$plug
 fi
 
 /usr/bin/nohup /bin/zsh "$plugin_root/scripts/runtime-macos.sh" "$plugin_root" "$plugin_data" >/dev/null 2>&1 &!
+if [[ "$enhancement_required" == "true" ]]; then
+  print '{"systemMessage":"RousePet is already visible with safe fallback actions. Follow the installed upgrade-codex-pet-health Skill to generate the missing tired, sick, and rest animations inside the private clone, visually approve the contact sheet, and atomically activate the extension. Never modify the official pet."}'
+fi

@@ -53,6 +53,8 @@ $cloneDirectory = if ($null -ne $current) { [string]$current.cloneDirectory } el
 $profile = if (-not [string]::IsNullOrWhiteSpace($cloneDirectory)) { Read-JsonSafe -Path (Join-Path $cloneDirectory 'health-profile.json') } else { $null }
 $profileVersion = if ($null -ne $profile -and $null -ne $profile.PSObject.Properties['version']) { [int]$profile.version } else { 0 }
 $actionLayoutId = if ($null -ne $profile -and $null -ne $profile.PSObject.Properties['actionLayoutId']) { [string]$profile.actionLayoutId } else { '' }
+$extensionStatus = if ($null -ne $profile -and $null -ne $profile.PSObject.Properties['healthExtension']) { [string]$profile.healthExtension.status } else { 'missing' }
+$extensionActions = if ($null -ne $profile -and $null -ne $profile.PSObject.Properties['healthExtension'] -and $null -ne $profile.healthExtension.PSObject.Properties['actions']) { @($profile.healthExtension.actions | ForEach-Object { [string]$_.semantic }) } else { @() }
 $requiredCloneFiles = @('pet.json', 'spritesheet.png', 'health-profile.json', 'atlases\stage-0.png', 'atlases\stage-1.png', 'atlases\stage-2.png', 'atlases\stage-3.png', 'atlases\stage-4.png', 'atlases\celebrate.png', 'atlases\held.png')
 $missingCloneFiles = @()
 if ([string]::IsNullOrWhiteSpace($cloneDirectory) -or -not (Test-ContainedPath -Parent $PluginData -Child $cloneDirectory)) {
@@ -97,7 +99,17 @@ $expectedManifestHash = if ($null -ne $profile) { [string]$profile.sourceManifes
 $sourceUnchanged = -not [string]::IsNullOrWhiteSpace($sourceSpriteHash) -and -not [string]::IsNullOrWhiteSpace($sourceManifestHash) -and $sourceSpriteHash -eq $expectedSpriteHash -and $sourceManifestHash -eq $expectedManifestHash
 if (-not $sourceUnchanged) { $warnings += 'Source pet hashes do not match the private health profile.' }
 if ($missingCloneFiles.Count -gt 0) { $warnings += 'Private clone is incomplete.' }
-if ($null -ne $profile -and ($profileVersion -lt 2 -or [string]::IsNullOrWhiteSpace($actionLayoutId))) { $warnings += 'Private clone uses a legacy action profile and should be rebuilt.' }
+if ($null -ne $profile -and ($profileVersion -lt 3 -or [string]::IsNullOrWhiteSpace($actionLayoutId))) { $warnings += 'Private clone uses a legacy action profile and should be rebuilt.' }
+if ($extensionStatus -notin @('complete', 'missing')) { $warnings += 'Dedicated private health actions are pending; safe fallback actions remain active.' }
+if ($extensionStatus -eq 'complete' -and $extensionActions.Count -gt 0) {
+    foreach ($stage in 2..4) {
+        $relative = [string]$profile.stages.PSObject.Properties[[string]$stage].Value.file
+        $candidate = Join-Path $cloneDirectory ($relative -replace '/', '\')
+        if (-not (Test-ContainedPath -Parent $cloneDirectory -Child $candidate) -or -not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+            $warnings += "Generated health stage $stage is missing or outside the private clone."
+        }
+    }
+}
 if (-not $runtimeAlive) { $warnings += 'Pet runtime is not running.' }
 
 $pendingEvents = @(Get-ChildItem -LiteralPath (Join-Path $PluginData 'events') -Filter '*.json' -File -ErrorAction SilentlyContinue).Count
@@ -119,6 +131,8 @@ $pendingEvents = @(Get-ChildItem -LiteralPath (Join-Path $PluginData 'events') -
     runtimePrivateMemoryMb = $runtimeMemoryMb
     profileVersion = if ($null -ne $profile) { $profileVersion } else { $null }
     actionLayoutId = if (-not [string]::IsNullOrWhiteSpace($actionLayoutId)) { $actionLayoutId } else { $null }
+    healthExtensionStatus = $extensionStatus
+    healthExtensionActions = $extensionActions
     candidateCount = if ($null -ne $current -and $null -ne $current.PSObject.Properties['candidateCount']) { $current.candidateCount } else { $null }
     configVersion = if ($null -ne $config -and $null -ne $config.PSObject.Properties['version']) { $config.version } else { $null }
     pausedUntilUtc = if ($null -ne $pause) { $pause.untilUtc } elseif (Test-Path -LiteralPath (Join-Path $PluginData 'pause.flag')) { 'indefinite-legacy' } else { $null }

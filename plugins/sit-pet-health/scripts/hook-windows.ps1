@@ -21,6 +21,7 @@ function Get-ShortHash {
 }
 
 try {
+    $enhancementMessage = $null
     $rootValue = if (-not [string]::IsNullOrWhiteSpace($env:CLAUDE_PLUGIN_ROOT)) { $env:CLAUDE_PLUGIN_ROOT } else { $env:PLUGIN_ROOT }
     $dataValue = if (-not [string]::IsNullOrWhiteSpace($env:CLAUDE_PLUGIN_DATA)) { $env:CLAUDE_PLUGIN_DATA } else { $env:PLUGIN_DATA }
     if ([string]::IsNullOrWhiteSpace($rootValue) -or [string]::IsNullOrWhiteSpace($dataValue)) {
@@ -48,7 +49,12 @@ try {
         catch { $previousCloneId = '' }
     }
     if ($eventName -eq 'SessionStart' -or -not (Test-Path -LiteralPath (Join-Path $pluginData 'current-pet.json') -PathType Leaf)) {
-        $null = & (Join-Path $pluginRoot 'scripts\prepare-pet-windows.ps1') -PluginData $pluginData
+        $prepareOutput = & (Join-Path $pluginRoot 'scripts\prepare-pet-windows.ps1') -PluginData $pluginData
+        $prepareResult = ($prepareOutput | Out-String) | ConvertFrom-Json
+        if ([bool]$prepareResult.enhancementRequired) {
+            $actions = @($prepareResult.enhancementActions) -join ', '
+            $enhancementMessage = "RousePet is already visible with safe fallback actions. Complete its private health animation extension for: $actions. Follow the installed upgrade-codex-pet-health Skill, use built-in image generation with the private clone at $([string]$prepareResult.cloneDirectory), visually approve the contact sheet, and atomically activate the extension. Never modify the official pet."
+        }
         if (-not (Test-Path -LiteralPath (Join-Path $pluginData 'current-pet.json') -PathType Leaf)) {
             throw 'Pet clone preparation did not produce current-pet.json.'
         }
@@ -102,6 +108,9 @@ try {
             '-PluginData', ('"' + $pluginData + '"')
         )
         Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WindowStyle Hidden | Out-Null
+    }
+    if (-not [string]::IsNullOrWhiteSpace($enhancementMessage)) {
+        [Console]::Out.WriteLine(([ordered]@{ systemMessage = $enhancementMessage } | ConvertTo-Json -Compress))
     }
 }
 catch {

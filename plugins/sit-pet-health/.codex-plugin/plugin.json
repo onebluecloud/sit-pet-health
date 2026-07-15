@@ -1,6 +1,6 @@
 {
   "name": "sit-pet-health",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "RousePet turns a read-only copy of your Codex pet into a local-first companion that reflects prolonged sitting and celebrates real breaks.",
   "author": {
     "name": "sit-pet contributors"
@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "RousePet",
     "shortDescription": "让你的 Codex 宠物替你记住起身。",
-    "longDescription": "RousePet 只读复制你的 Codex 宠物，根据键鼠空闲推断久坐、离开电脑和返回恢复，并在 Codex 接手任务时提醒你利用空窗活动；不安装独立 EXE。",
+    "longDescription": "RousePet 只读复制你的 Codex 宠物，为缺失的健康动作生成并质检私有扩展图集，根据键鼠空闲推断久坐、离开电脑和返回恢复，并在 Codex 接手任务时提醒你利用空窗活动；不安装独立 EXE。",
     "developerName": "sit-pet contributors",
     "category": "Productivity",
     "capabilities": ["Interactive", "Local"],

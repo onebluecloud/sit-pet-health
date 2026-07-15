@@ -56,4 +56,6 @@ if (-not $SkipLaunch) {
     installedPath = $installedPath
     launched = if ($SkipLaunch) { $false } else { [bool]$launch.ok }
     pluginData = if ($null -eq $launch) { $null } else { [string]$launch.pluginData }
+    enhancementRequired = if ($null -eq $launch) { $false } else { [bool]$launch.enhancementRequired }
+    enhancementMessage = if ($null -eq $launch) { $null } else { [string]$launch.systemMessage }
 } | ConvertTo-Json -Compress

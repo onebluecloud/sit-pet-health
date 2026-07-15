@@ -19,9 +19,13 @@ fi
 
 export CLAUDE_PLUGIN_ROOT="$plugin_root"
 export CLAUDE_PLUGIN_DATA="$plugin_data"
-print -rn -- '{"hook_event_name":"SessionStart","session_id":""}' | /bin/zsh "$plugin_root/scripts/hook-macos.sh"
+hook_output=$(print -rn -- '{"hook_event_name":"SessionStart","session_id":""}' | /bin/zsh "$plugin_root/scripts/hook-macos.sh")
+enhancement_required=false
+if [[ "$hook_output" == *"private health"* || "$hook_output" == *"missing tired, sick, and rest"* ]]; then
+  enhancement_required=true
+fi
 for _ in {1..20}; do
   [[ -f "$plugin_data/runtime.pid" ]] && break
   /bin/sleep 0.1
 done
-print "{\"ok\":$([[ -f "$plugin_data/runtime.pid" ]] && print true || print false),\"pluginData\":\"$plugin_data\"}"
+print "{\"ok\":$([[ -f "$plugin_data/runtime.pid" ]] && print true || print false),\"pluginData\":\"$plugin_data\",\"enhancementRequired\":$enhancement_required}"

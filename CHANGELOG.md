@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Detect whether a pet explicitly declares dedicated tired, sick, and rest actions instead of treating slices of the standard failed row as complete health coverage.
+- Add grounded six-frame private health-action generation jobs that preserve the original pet identity and never write to the official pet directory.
+- Add deterministic chroma cleanup, frame QA, contact-sheet review, atomic profile activation, and safe fallback behavior when generation is unavailable or rejected.
+- Keep first launch immediate by rendering fallback actions while the private extension is being prepared.
+
 ## 1.0.0 - 2026-07-14
 
 - Add a self-contained RedSkill entry point that installs the bundled local marketplace without visiting GitHub.

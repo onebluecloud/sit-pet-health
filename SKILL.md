@@ -30,7 +30,8 @@ description: 从当前 RedSkill 包离线安装、启动、检查或卸载 Rouse
 
 4. 检查安装器返回的 JSON。只有 `ok=true` 且 `installedPath` 存在时才算安装完成。
 5. 安装器会立即启动桌宠。若本地没有官方 `/hatch` 宠物，桌面会显示创建入口；询问用户一句宠物描述或一张参考图片，再使用已安装 Plugin 内的 `upgrade-codex-pet-health` Skill 完成私有创建。
-6. 告知用户未来 Codex 会话第一次触发 Hooks 时会出现官方信任审核；这是安全边界，不能绕过。
+6. 若安装结果为 `enhancementRequired=true`，宠物已经使用安全回退动作显示。不要在这里结束任务；读取 `<installedPath>/skills/upgrade-codex-pet-health/SKILL.md`，执行其中“补齐私有健康动作”的完整流程，为缺少的 `tired/sick/rest` 生成私有动画、检查联系表并原子启用。图片生成不可用或质检失败时保留回退动作，明确报告，绝不伪造完成。
+7. 告知用户未来 Codex 会话第一次触发 Hooks 时会出现官方信任审核；这是安全边界，不能绕过。
 
 ## 后续操作
 

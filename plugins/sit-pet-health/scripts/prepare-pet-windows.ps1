@@ -134,13 +134,30 @@ function Test-CloneComplete {
             if (-not (Test-Path -LiteralPath $path -PathType Leaf) -or (Get-Item -LiteralPath $path).Length -le 0) { return $false }
         }
         $profile = Get-Content -LiteralPath (Join-Path $Directory 'health-profile.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-        return [int]$profile.version -ge 2 -and
+        return [int]$profile.version -ge 3 -and
             -not [string]::IsNullOrWhiteSpace([string]$profile.actionLayoutId) -and
             [string]$profile.sourceSpriteSha256 -eq $SourceSpriteSha256 -and
             [string]$profile.sourceManifestSha256 -eq $SourceManifestSha256
     }
     catch {
         return $false
+    }
+}
+
+function Get-EnhancementSummary {
+    param([string]$Directory)
+    $profile = Get-Content -LiteralPath (Join-Path $Directory 'health-profile.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $extension = $profile.healthExtension
+    $status = if ($null -ne $extension -and -not [string]::IsNullOrWhiteSpace([string]$extension.status)) { [string]$extension.status } else { 'required' }
+    $actions = @()
+    if ($null -ne $extension -and $null -ne $extension.PSObject.Properties['actions']) {
+        $actions = @($extension.actions | ForEach-Object { if ($null -ne $_.PSObject.Properties['semantic']) { [string]$_.semantic } } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    }
+    return [pscustomobject]@{
+        Required = $status -ne 'complete'
+        Status = $status
+        Actions = $actions
+        RequestPath = Join-Path $Directory 'health-profile.json'
     }
 }
 
@@ -264,6 +281,7 @@ if (Test-CloneComplete -Directory $cloneDirectory -SourceSpriteSha256 $sourceHas
         displayName = $displayName
         candidateCount = $candidates.Count
     })
+    $enhancement = Get-EnhancementSummary -Directory $cloneDirectory
     [pscustomobject]@{
         ok = $true
         reused = $true
@@ -274,6 +292,10 @@ if (Test-CloneComplete -Directory $cloneDirectory -SourceSpriteSha256 $sourceHas
         sourceManifestSha256 = $manifestHash
         sourceUnchanged = $true
         candidateCount = $candidates.Count
+        enhancementRequired = $enhancement.Required
+        enhancementStatus = $enhancement.Status
+        enhancementActions = $enhancement.Actions
+        enhancementRequestPath = $enhancement.RequestPath
     } | ConvertTo-Json -Compress
     return
 }
@@ -297,6 +319,7 @@ try {
     $actionLayoutId = [string]$layout.id
     $actions = $layout.actions
     $fallbacks = $layout.fallbacks
+    $explicitHealthActions = @()
     if ($null -ne $selected.Manifest.PSObject.Properties['sitPetHealthActions']) {
         $customActions = $selected.Manifest.sitPetHealthActions
         if ([int]$customActions.frameWidth -ne 192 -or [int]$customActions.frameHeight -ne 208) {
@@ -304,6 +327,9 @@ try {
         }
         if ($null -eq $customActions.PSObject.Properties['actions']) { throw 'Custom semantic actions are missing actions.' }
         $actions = $customActions.actions
+        foreach ($semantic in @('tired', 'sick', 'rest')) {
+            if ($null -ne $customActions.actions.PSObject.Properties[$semantic]) { $explicitHealthActions += $semantic }
+        }
         $actionLayoutId = if (-not [string]::IsNullOrWhiteSpace([string]$customActions.layoutId)) { [string]$customActions.layoutId } else { 'pet-manifest-custom' }
     }
 
@@ -390,8 +416,25 @@ try {
             durationMs = $spec.DurationMs
         }
     }
+    $enhancementActions = @()
+    foreach ($healthAction in @(
+        @{ Semantic = 'tired'; Stage = 2 },
+        @{ Semantic = 'sick'; Stage = 3 },
+        @{ Semantic = 'rest'; Stage = 4 }
+    )) {
+        if ($explicitHealthActions -notcontains $healthAction.Semantic) {
+            $stageSpec = $stageSpecs[[int]$healthAction.Stage]
+            $enhancementActions += [ordered]@{
+                semantic = $healthAction.Semantic
+                stage = [int]$healthAction.Stage
+                reason = 'No explicit dedicated health action is declared by this pet.'
+                currentSemantic = $stageSpec.ResolvedSemantic
+                currentFile = "atlases/$($stageSpec.Name)"
+            }
+        }
+    }
     $profile = [ordered]@{
-        version = 2
+        version = 3
         actionLayoutId = $actionLayoutId
         sourceSlug = $selected.Slug
         sourceDisplayName = $displayName
@@ -404,6 +447,12 @@ try {
         stages = $profileAtlases
         celebrate = [ordered]@{ file = 'atlases/celebrate.png'; semanticAction = $stageSpecs[5].ResolvedSemantic; frames = $stageSpecs[5].Frames; durationMs = $stageSpecs[5].DurationMs }
         held = [ordered]@{ file = 'atlases/held.png'; semanticAction = $stageSpecs[6].ResolvedSemantic; frames = $stageSpecs[6].Frames; durationMs = $stageSpecs[6].DurationMs }
+        healthExtension = [ordered]@{
+            version = 1
+            status = if ($enhancementActions.Count -gt 0) { 'required' } else { 'complete' }
+            actions = $enhancementActions
+            policy = 'Generate only missing dedicated health actions in the private RousePet clone.'
+        }
         generatedAtUtc = [DateTime]::UtcNow.ToString('o')
     }
     Write-JsonAtomic -Path (Join-Path $staging 'health-profile.json') -Value $profile
@@ -438,6 +487,7 @@ try {
         candidateCount = $candidates.Count
     })
 
+    $enhancement = Get-EnhancementSummary -Directory $cloneDirectory
     [pscustomobject]@{
         ok = $true
         reused = $false
@@ -448,6 +498,10 @@ try {
         sourceManifestSha256 = $manifestHash
         sourceUnchanged = $true
         candidateCount = $candidates.Count
+        enhancementRequired = $enhancement.Required
+        enhancementStatus = $enhancement.Status
+        enhancementActions = $enhancement.Actions
+        enhancementRequestPath = $enhancement.RequestPath
     } | ConvertTo-Json -Compress
 }
 catch {

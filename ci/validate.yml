@@ -12,6 +12,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image validation dependency
+        run: python -m pip install Pillow
       - name: Validate JSON and JavaScript syntax
         run: |
           node -e "for (const p of ['.agents/plugins/marketplace.json','plugins/sit-pet-health/.codex-plugin/plugin.json','plugins/sit-pet-health/assets/default-config.json','plugins/sit-pet-health/assets/dialogues.zh-CN.json','plugins/sit-pet-health/assets/action-layouts.json','plugins/sit-pet-health/hooks/hooks.json']) JSON.parse(require('fs').readFileSync(p,'utf8'))"
@@ -19,6 +24,7 @@ jobs:
           node --check plugins/sit-pet-health/scripts/runtime-macos.js
           node --check plugins/sit-pet-health/scripts/prepare-pet-macos.js
           node plugins/sit-pet-health/scripts/tests/health-core.test.js
+          python plugins/sit-pet-health/scripts/tests/health-extension.test.py
       - name: Validate shell scripts
         run: bash -n plugins/sit-pet-health/scripts/*.sh
 

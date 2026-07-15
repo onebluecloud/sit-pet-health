@@ -1,5 +1,5 @@
 param(
-    [string]$Version = '1.1.1',
+    [string]$Version = '1.2.0',
     [string]$OutputDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) 'dist')
 )
 
@@ -26,6 +26,13 @@ Copy-Item -LiteralPath (Join-Path $repositoryRoot 'scripts\install-redskill-maco
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'SKILL.md') -Destination $packageRoot -Force
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'LICENSE') -Destination (Join-Path $packageRoot 'LICENSE.txt') -Force
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'plugins\sit-pet-health\THIRD-PARTY-NOTICES.txt') -Destination $packageRoot -Force
+
+Get-ChildItem -LiteralPath $packageRoot -Recurse -Directory -Filter '__pycache__' |
+    Sort-Object { $_.FullName.Length } -Descending |
+    Remove-Item -Recurse -Force
+Get-ChildItem -LiteralPath $packageRoot -Recurse -File | Where-Object {
+    $_.Extension -in @('.pyc', '.pyo') -or $_.Name -eq '.DS_Store'
+} | Remove-Item -Force
 
 # RED Skill upload currently filters extensionless files and .yaml files. Keep
 # portable text carriers in the archive; the installer restores openai.yaml.

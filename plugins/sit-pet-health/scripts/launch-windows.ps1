@@ -22,8 +22,13 @@ if ([string]::IsNullOrWhiteSpace($PluginData)) {
 $PluginData = [System.IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($PluginData))
 $env:CLAUDE_PLUGIN_ROOT = $PluginRoot
 $env:CLAUDE_PLUGIN_DATA = $PluginData
-'{"hook_event_name":"SessionStart","session_id":""}' |
+$hookOutput = '{"hook_event_name":"SessionStart","session_id":""}' |
     PowerShell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PluginRoot 'scripts\hook-windows.ps1')
+$hookMessage = $null
+if (-not [string]::IsNullOrWhiteSpace(($hookOutput | Out-String))) {
+    try { $hookMessage = [string](($hookOutput | Out-String) | ConvertFrom-Json).systemMessage }
+    catch { $hookMessage = ($hookOutput | Out-String).Trim() }
+}
 
 for ($attempt = 0; $attempt -lt 50; $attempt++) {
     if ((Test-Path -LiteralPath (Join-Path $PluginData 'runtime.pid') -PathType Leaf) -and
@@ -34,4 +39,6 @@ for ($attempt = 0; $attempt -lt 50; $attempt++) {
     ok = Test-Path -LiteralPath (Join-Path $PluginData 'runtime.pid') -PathType Leaf
     pluginData = $PluginData
     currentPet = Test-Path -LiteralPath (Join-Path $PluginData 'current-pet.json') -PathType Leaf
+    enhancementRequired = -not [string]::IsNullOrWhiteSpace($hookMessage) -and $hookMessage -match 'health animation extension|missing tired, sick, and rest'
+    systemMessage = $hookMessage
 } | ConvertTo-Json -Compress

@@ -114,6 +114,7 @@ function run(argv) {
       displayName,
       candidateCount: candidates.length,
     });
+    const enhancement = enhancementSummary(cloneDirectory);
     return JSON.stringify({
       ok: true,
       reused: true,
@@ -124,6 +125,10 @@ function run(argv) {
       sourceManifestSha256: manifestHash,
       sourceUnchanged: true,
       candidateCount: candidates.length,
+      enhancementRequired: enhancement.required,
+      enhancementStatus: enhancement.status,
+      enhancementActions: enhancement.actions,
+      enhancementRequestPath: enhancement.requestPath,
     });
   }
 
@@ -154,12 +159,14 @@ function run(argv) {
     let actions = layout.actions || {};
     const fallbacks = layout.fallbacks || {};
     let actionLayoutId = String(layout.id || "unknown");
+    let explicitHealthActions = [];
     if (selected.manifest.sitPetHealthActions) {
       const custom = selected.manifest.sitPetHealthActions;
       if (Number(custom.frameWidth) !== 192 || Number(custom.frameHeight) !== 208 || !custom.actions) {
         throw new Error("Custom semantic actions must provide 192x208 actions.");
       }
       actions = custom.actions;
+      explicitHealthActions = ["tired", "sick", "rest"].filter((semantic) => Boolean(custom.actions[semantic]));
       actionLayoutId = String(custom.layoutId || "pet-manifest-custom");
     }
     function resolveAction(semantic) {
@@ -214,8 +221,19 @@ function run(argv) {
         durationMs: specs[level].durationMs,
       };
     }
+    const enhancementActions = [
+      { semantic: "tired", stage: 2 },
+      { semantic: "sick", stage: 3 },
+      { semantic: "rest", stage: 4 },
+    ].filter((item) => explicitHealthActions.indexOf(item.semantic) < 0).map((item) => ({
+      semantic: item.semantic,
+      stage: item.stage,
+      reason: "No explicit dedicated health action is declared by this pet.",
+      currentSemantic: specs[item.stage].resolvedSemantic,
+      currentFile: "atlases/" + specs[item.stage].name,
+    }));
     writeJsonAtomic(staging + "/health-profile.json", {
-      version: 2,
+      version: 3,
       actionLayoutId,
       sourceSlug: selected.slug,
       sourceDisplayName: displayName,
@@ -228,6 +246,12 @@ function run(argv) {
       stages,
       celebrate: { file: "atlases/celebrate.png", semanticAction: specs[5].resolvedSemantic, frames: specs[5].frames, durationMs: specs[5].durationMs },
       held: { file: "atlases/held.png", semanticAction: specs[6].resolvedSemantic, frames: specs[6].frames, durationMs: specs[6].durationMs },
+      healthExtension: {
+        version: 1,
+        status: enhancementActions.length ? "required" : "complete",
+        actions: enhancementActions,
+        policy: "Generate only missing dedicated health actions in the private RousePet clone.",
+      },
       generatedAtUtc: new Date().toISOString(),
     });
 
@@ -259,6 +283,7 @@ function run(argv) {
       displayName,
       candidateCount: candidates.length,
     });
+    const enhancement = enhancementSummary(cloneDirectory);
     return JSON.stringify({
       ok: true,
       reused: false,
@@ -269,6 +294,10 @@ function run(argv) {
       sourceManifestSha256: manifestHash,
       sourceUnchanged: true,
       candidateCount: candidates.length,
+      enhancementRequired: enhancement.required,
+      enhancementStatus: enhancement.status,
+      enhancementActions: enhancement.actions,
+      enhancementRequestPath: enhancement.requestPath,
     });
   } catch (error) {
     if (isDirectory(staging)) removeItem(staging);
@@ -336,12 +365,24 @@ function run(argv) {
           .map((name) => path + "/atlases/" + name));
       if (!required.every((file) => isFile(file) && fileSize(file) > 0)) return false;
       const profile = readJson(path + "/health-profile.json");
-      return Number(profile.version || 0) >= 2 && String(profile.actionLayoutId || "") &&
+      return Number(profile.version || 0) >= 3 && String(profile.actionLayoutId || "") &&
         String(profile.sourceSpriteSha256 || "") === spriteHash &&
         String(profile.sourceManifestSha256 || "") === manifestHash;
     } catch (_) {
       return false;
     }
+  }
+  function enhancementSummary(path) {
+    const profile = readJson(path + "/health-profile.json");
+    const extension = profile.healthExtension || {};
+    const status = String(extension.status || "required");
+    const actions = Array.from(extension.actions || []).map((item) => String(item.semantic || "")).filter(Boolean);
+    return {
+      required: status !== "complete",
+      status,
+      actions,
+      requestPath: path + "/health-profile.json",
+    };
   }
   function sha256(path) {
     const task = $.NSTask.alloc.init;
