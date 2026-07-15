@@ -156,13 +156,13 @@ $xaml = @'
       <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox"><Border CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"><ScrollViewer x:Name="PART_ContentHost"/></Border></ControlTemplate></Setter.Value></Setter>
     </Style>
     <Style TargetType="Slider">
-      <Setter Property="Height" Value="28"/>
+      <Setter Property="Height" Value="30"/>
       <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Slider">
-        <Grid VerticalAlignment="Center">
-          <Track x:Name="PART_Track" Height="8">
-            <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static Slider.DecreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#E98779"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
+        <Grid Height="30" VerticalAlignment="Center">
+          <Track x:Name="PART_Track" Height="22" Margin="11,0" VerticalAlignment="Center">
+            <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static Slider.DecreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#E98779" VerticalAlignment="Center"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
             <Track.Thumb><Thumb Width="19" Height="19"><Thumb.Template><ControlTemplate TargetType="Thumb"><Ellipse Fill="#FFFDF9" Stroke="#D9796D" StrokeThickness="2"><Ellipse.Effect><DropShadowEffect Color="#6A4D43" BlurRadius="5" ShadowDepth="1" Opacity="0.18"/></Ellipse.Effect></Ellipse></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
-            <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static Slider.IncreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#DCE9E2"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
+            <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static Slider.IncreaseLarge}"><RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Height="6" CornerRadius="3" Background="#DCE9E2" VerticalAlignment="Center"/></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
           </Track>
         </Grid>
       </ControlTemplate></Setter.Value></Setter>

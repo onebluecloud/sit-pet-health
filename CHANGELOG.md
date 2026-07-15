@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.1 - 2026-07-14
+
+- Prevent the pet-size slider thumb from being clipped at its minimum value.
+- Render every Windows status-menu icon with the matching Fluent icon font and remove missing-glyph boxes.
+
 ## 0.8.0 - 2026-07-14
 
 - Track concurrent Codex tasks independently and split health/Codex reminder budgets.

@@ -653,7 +653,7 @@ try {
               <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="6">
                 <Grid Margin="10,0">
                   <Grid.ColumnDefinitions><ColumnDefinition Width="26"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                   <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe UI Symbol" FontSize="14"
+                   <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="15"
                              Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
                   <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </Grid>
@@ -689,13 +689,13 @@ try {
       </UniformGrid>
       <Border Height="1" Margin="0,0,0,5" Background="#E9E0D8"/>
       <Button x:Name="PauseButton" Tag="&#xE769;"/>
-      <Button x:Name="PauseTodayButton" Tag="&#xE823;"/>
+      <Button x:Name="PauseTodayButton" Tag="&#xE787;"/>
       <Button x:Name="SettingsButton" Tag="&#xE713;"/>
-      <Button x:Name="ShareButton" Tag="&#xE8A7;"/>
-      <Button x:Name="ResetPositionButton" Tag="&#x2316;"/>
-      <Button x:Name="ResetScaleButton" Tag="&#x2197;"/>
+      <Button x:Name="ShareButton" Tag="&#xE72D;"/>
+      <Button x:Name="ResetPositionButton" Tag="&#xE707;"/>
+      <Button x:Name="ResetScaleButton" Tag="&#xE73F;"/>
       <Border Height="1" Margin="0,5" Background="#E9E0D8"/>
-      <Button x:Name="ExitButton" Tag="&#x00D7;" Foreground="#A95F58"/>
+      <Button x:Name="ExitButton" Tag="&#xE8BB;" Foreground="#A95F58"/>
     </StackPanel>
   </Border>
 </Grid>
@@ -768,7 +768,7 @@ try {
         $listenedValue.Text = [string][int]$state.listenedBreaks
         $isPaused = Test-SitPetPaused
         $pauseButton.Content = if ($isPaused) { [string]$dialogues.ui.resume } else { [string]$dialogues.ui.pause }
-        $pauseButton.Tag = if ($isPaused) { '>' } else { 'II' }
+        $pauseButton.Tag = if ($isPaused) { [string][char]0xE768 } else { [string][char]0xE769 }
         $pauseTodayButton.Visibility = if ($isPaused) { [System.Windows.Visibility]::Collapsed } else { [System.Windows.Visibility]::Visible }
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "sit-pet-health",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A no-EXE Codex pet health companion that clones local pets read-only, monitors time away from input, and turns Codex wait time into movement prompts.",
   "author": {
     "name": "sit-pet contributors"

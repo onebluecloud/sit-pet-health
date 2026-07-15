@@ -26,6 +26,12 @@ function Write-TransparentPng {
 }
 
 try {
+    $settingsSource = Get-Content -LiteralPath (Join-Path $pluginRoot 'scripts\settings-windows.ps1') -Raw -Encoding UTF8
+    $runtimeSource = Get-Content -LiteralPath (Join-Path $pluginRoot 'scripts\runtime-windows.ps1') -Raw -Encoding UTF8
+    Assert-True ($settingsSource -match '<Track x:Name="PART_Track" Height="22" Margin="11,0"') 'The size-slider track no longer reserves room for its thumb.'
+    Assert-True ($runtimeSource -match 'TemplateBinding Tag\}" FontFamily="Segoe MDL2 Assets"') 'The status menu is not using the Fluent icon font.'
+    Assert-True ($runtimeSource -notmatch 'Tag="&#x2316;"|Tag="&#x2197;"|Tag="&#x00D7;"') 'The status menu still contains mixed-font fallback icons.'
+
     $source = Join-Path $resolved 'custom-sources\ui-pet'
     [System.IO.Directory]::CreateDirectory($source) | Out-Null
     Write-TransparentPng -Path (Join-Path $source 'spritesheet.png')
