@@ -1,5 +1,7 @@
 # 发布顺序
 
+先打开 `sit-pet-health-xhs-publish-guide.html`。里面已经集中放好 Skill 名称、简介、详细功能、使用方法、标题、正文、标签、7 张图片预览和每张图片的绝对路径。
+
 1. GitHub：把 `v1.0.0` 代码推到 `main`，创建 Release，并上传 RedSkill ZIP 与 SHA-256 文件。
 2. 小红书：依次上传 `xiaohongshu/01.png` 到 `07.png`。
 3. 使用 `xiaohongshu-post.md` 的推荐标题和正文，人工检查一次真实表述。
