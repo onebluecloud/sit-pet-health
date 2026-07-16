@@ -101,7 +101,6 @@ try {
         Remove-Item -LiteralPath $runtimePidPath -Force -ErrorAction SilentlyContinue
         $arguments = @(
             '-NoProfile',
-            '-ExecutionPolicy', 'Bypass',
             '-STA',
             '-File', ('"' + (Join-Path $pluginRoot 'scripts\runtime-windows.ps1') + '"'),
             '-PluginRoot', ('"' + $pluginRoot + '"'),
@@ -121,7 +120,7 @@ catch {
             $settingsPath = Join-Path $pluginRoot 'scripts\settings-windows.ps1'
             if (Test-Path -LiteralPath $settingsPath -PathType Leaf) {
                 $arguments = @(
-                    '-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA',
+                    '-NoProfile', '-STA',
                     '-File', ('"' + $settingsPath + '"'),
                     '-PluginRoot', ('"' + $pluginRoot + '"'),
                     '-PluginData', ('"' + $pluginData + '"'),

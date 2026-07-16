@@ -7,7 +7,7 @@
           {
             "type": "command",
             "command": "/bin/zsh \"$CLAUDE_PLUGIN_ROOT/scripts/hook-macos.sh\"",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
             "timeout": 20
           }
         ]
@@ -19,7 +19,7 @@
           {
             "type": "command",
             "command": "/bin/zsh \"$CLAUDE_PLUGIN_ROOT/scripts/hook-macos.sh\"",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
             "timeout": 10
           }
         ]
@@ -32,7 +32,7 @@
           {
             "type": "command",
             "command": "/bin/zsh \"$CLAUDE_PLUGIN_ROOT/scripts/hook-macos.sh\"",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
             "timeout": 10
           }
         ]
@@ -44,7 +44,7 @@
           {
             "type": "command",
             "command": "/bin/zsh \"$CLAUDE_PLUGIN_ROOT/scripts/hook-macos.sh\"",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -File \"$env:CLAUDE_PLUGIN_ROOT\\scripts\\hook-windows.ps1\"",
             "timeout": 10
           }
         ]

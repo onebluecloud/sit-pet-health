@@ -29,7 +29,7 @@ Use this skill's scripts for deterministic work only: preparing prompts and mani
 
 Hard boundary: do not create, draw, tile, warp, mirror, or synthesize pet visuals with local Python/Pillow scripts, SVG, canvas, HTML/CSS, or other code-native art as a substitute for `$imagegen`. For a normal pet run, expect up to 10 visual generation jobs: 1 base pet plus 9 row-strip jobs. The only exception is `running-left`, which may be derived by mirroring `running-right` only after `running-right` has been generated, visually inspected, and explicitly approved as safe to mirror. If mirroring is not appropriate, generate `running-left` as a normal grounded `$imagegen` row. If those calls are too expensive, blocked, or unavailable, stop and explain the blocker instead of fabricating row strips locally.
 
-Do not mark visual jobs complete by editing `imagegen-jobs.json`, copying files into `decoded/`, or writing helper scripts that populate row outputs. Use `record_imagegen_result.py` for selected built-in `$imagegen` outputs, or `generate_pet_images.py` only for the documented secondary fallback. The deterministic scripts may only process already-generated visual outputs.
+Do not mark visual jobs complete by editing `imagegen-jobs.json`, copying files into `decoded/`, or writing helper scripts that populate row outputs. Use `record_imagegen_result.py` for selected built-in `$imagegen` outputs. The deterministic scripts may only process already-generated visual outputs.
 
 Only the base job may be prompt-only. Every row-strip job generated through `$imagegen` must use the input images listed in `imagegen-jobs.json`, including the canonical base reference created after the base job is recorded. Treat any row generation without attached grounding images as invalid.
 
@@ -271,23 +271,6 @@ python "$SKILL_DIR/scripts/queue_pet_repairs.py" \
 Then repeat the `$imagegen` generation and `record_imagegen_result.py` ingest loop for each reopened row job. Regenerate the smallest failing scope: the failed row, not the whole sheet.
 
 For identity repairs, use the canonical base image, original references, contact sheet, and exact row failure note as grounding context. Repair only the failed row while preserving the canonical pet identity.
-
-## Secondary Image Generation Fallback
-
-`scripts/generate_pet_images.py` is a secondary fallback for this skill.
-
-Use it only when the installed `$imagegen` system skill is unavailable or cannot be invoked in the current environment. Normal pet creation should delegate visual generation to `$imagegen`, because `$imagegen` owns the built-in-first image generation policy and its own CLI fallback behavior.
-
-Run the secondary fallback only after explaining why `$imagegen` cannot be used:
-
-```bash
-python "$SKILL_DIR/scripts/generate_pet_images.py" \
-  --run-dir /absolute/path/to/run \
-  --model gpt-image-2 \
-  --states all
-```
-
-The secondary fallback requires `OPENAI_API_KEY`.
 
 ## Rules
 

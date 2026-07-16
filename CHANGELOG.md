@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Rebuild the RedSkill archive with a stable `rousepet/` top-level folder matching the root Skill name.
+- Ship only visible, platform-supported source formats and remove YAML carriers, filtered-file restoration, direct OpenAI API fallback code, and macOS files from the RedSkill edition.
+- Require explicit permission acknowledgement before installation and disclose idle-time access, lifecycle Hooks, local persistence, the resident WPF process, and scoped uninstall behavior.
+- Remove PowerShell execution-policy overrides from the shipped runtime and installer.
+- Add ownership checks before replacing the local RousePet marketplace directory.
+- Keep the GitHub source distribution cross-platform while defining the RedSkill v1.3.0 package as Windows-only.
+
 ## 1.2.1
 
 - Remove the redundant size slider from settings while preserving direct resize-handle, mouse-wheel, and saved `petScale` behavior.

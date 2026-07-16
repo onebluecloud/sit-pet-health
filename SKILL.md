@@ -1,46 +1,53 @@
 ---
-name: install-sit-pet-health
-description: 从当前 RedSkill 包离线安装、启动、检查或卸载 RousePet。用于用户说“安装 RousePet”“把 Codex 宠物放到桌面”“开启久坐提醒”“宠物没出现”或“卸载 RousePet”时；安装只使用包内 Plugin，不访问 GitHub，不修改官方宠物和 Codex 会话数据。Windows 正式支持，macOS 实验性支持。
+name: rousepet
+description: 仅在用户明确要求安装、启动、检查或卸载 RousePet 桌面宠物久坐提醒时使用；Windows 版只读使用本地 Codex /hatch 宠物，通过系统空闲时间和 Codex 生命周期事件提供五阶段久坐反馈。安装前必须逐项披露本地权限并获得用户明确确认。不用于医疗诊断，也不修改官方宠物或会话正文。
 ---
 
-# 安装 RousePet
+# RousePet
 
-## 数据边界
+版本：1.3.0 RedSkill 审核版。
 
-- 把 `CODEX_HOME/pets` 或 `~/.codex/pets` 作为只读输入。
-- 所有复制体、配置和健康数据只写入 Codex Plugin 私有数据目录。
-- 不下载或安装 EXE，不读取任务正文，不写入官方宠物目录。
-- 最差状态是可逆休息，不把元气解释为寿命或医疗指标。
+RousePet 是本地 Codex Skill + Plugin。它把用户已有的 `/hatch` 宠物只读复制到独立目录，显示为 Windows 桌面挂件，并根据连续操作、真实离开电脑和 Codex 任务空窗提供久坐提醒。
 
-## 首次安装
+## 安装前权限确认
 
-1. 将包含本文件的目录作为 `PACKAGE_ROOT`。不要从 GitHub 或其他站点重新下载项目。
-   包内 `openai.yaml.txt` 是 RED Skill 上传兼容载体，安装器会在本地自动还原为 `openai.yaml`；不要要求用户手工改名。
-2. Windows 运行：
+首次安装前，必须把下面六项完整告诉用户，并等待用户明确回复同意。不得把用户最初的“安装 RousePet”自动视为已经理解这些权限，也不得静默安装。
 
-   ```powershell
-   PowerShell -ExecutionPolicy Bypass -File "<PACKAGE_ROOT>\scripts\install-redskill-windows.ps1" -PackageRoot "<PACKAGE_ROOT>"
-   ```
+1. **只读宠物**：读取 `CODEX_HOME/pets` 或 `~/.codex/pets` 中的 `pet.json` 和 spritesheet；不写入、删除或覆盖官方宠物。
+2. **本地私有数据**：在 Codex Plugin 私有数据目录保存宠物复制体、配置、健康状态、日志和用户主动生成的分享卡。
+3. **系统空闲时间**：调用 Windows `GetLastInputInfo`，只获得“距上次键鼠输入多少秒”，不记录按键、鼠标位置或输入内容。
+4. **Codex 生命周期事件**：安装 `SessionStart`、`UserPromptSubmit`、`PermissionRequest`、`Stop` Hooks，只保存事件名、时间和会话 ID 的短哈希；不读取或保存 prompt、回复、仓库文件和任务正文。
+5. **桌面常驻窗口**：启动一个本地 PowerShell/WPF 进程显示桌宠；不会设置 Windows 开机启动，用户可随时从右键菜单退出。
+6. **卸载范围**：卸载时只结束经命令行校验属于 RousePet 的进程，并删除 RousePet Plugin 私有数据；官方宠物目录不在删除范围内。
 
-3. macOS 运行：
+同时说明：Windows 10/11 已验证；RedSkill 包不提供 macOS/Linux 桌面版；运行期不联网、不调用 LLM、不下载 EXE；元气只是互动值，不是寿命或医疗指标。
 
-   ```bash
-   /bin/zsh "<PACKAGE_ROOT>/scripts/install-redskill-macos.sh" "<PACKAGE_ROOT>"
-   ```
+只有用户在看到上述说明后明确回复“同意安装并授予这些权限”或同等清晰表述，才执行：
 
-4. 检查安装器返回的 JSON。只有 `ok=true` 且 `installedPath` 存在时才算安装完成。
-5. 安装器会立即启动桌宠。若本地没有官方 `/hatch` 宠物，桌面会显示创建入口；询问用户一句宠物描述或一张参考图片，再使用已安装 Plugin 内的 `upgrade-codex-pet-health` Skill 完成私有创建。
-6. 若安装结果为 `enhancementRequired=true`，宠物已经使用安全回退动作显示。不要在这里结束任务；读取 `<installedPath>/skills/upgrade-codex-pet-health/SKILL.md`，执行其中“补齐私有健康动作”的完整流程，为缺少的 `tired/sick/rest` 生成私有动画、检查联系表并原子启用。图片生成不可用或质检失败时保留回退动作，明确报告，绝不伪造完成。
-7. 告知用户未来 Codex 会话第一次触发 Hooks 时会出现官方信任审核；这是安全边界，不能绕过。
+```powershell
+& "<PACKAGE_ROOT>\scripts\install-redskill-windows.ps1" -PackageRoot "<PACKAGE_ROOT>" -AcknowledgePermissions
+```
+
+不要覆盖或降低系统的 PowerShell 执行策略。若系统策略阻止本地脚本，如实报告并停止。
+
+## 安装结果
+
+1. 解析安装器 JSON；仅当 `ok=true`、`installedPath` 存在且 `launched=true` 时，才报告已经安装并显示。
+2. 安装器会从包内可见的 `metadata/*.json` 和 `plugin/` 源码创建本地 Codex marketplace，再调用 Codex 官方 Plugin CLI。它不会从 GitHub或其他地址下载代码。
+3. 安装后会立即显示最近更新的一只合法宠物；有多只时打开选择器。
+4. 若没有官方宠物，询问一句宠物描述或一张参考图片，再读取已安装的 `upgrade-codex-pet-health` Skill，生成到 Plugin 私有目录。不得写入官方 `pets` 目录。
+5. 若返回 `enhancementRequired=true`，桌宠已使用原图集安全动作运行。继续按已安装 Skill 的私有健康动作流程，仅补齐缺失的 `tired/sick/rest`，视觉质检通过后再启用。
 
 ## 后续操作
 
-- 安装完成后，改宠物、诊断、久坐提醒、创建自定义宠物和卸载都交给已安装 Plugin 内的 `upgrade-codex-pet-health` Skill。
-- 右键宠物可打开设置、暂停提醒、换宠物和生成分享卡。
-- 不提供常驻“我动过了”按钮；系统根据键鼠连续空闲和返回自动确认起身。
+- 启动、设置、换宠物、诊断和私有动作补齐：读取安装结果 `installedPath` 下的 `skills/upgrade-codex-pet-health/SKILL.md`。
+- 暂停提醒：使用桌宠右键菜单。
+- 卸载：先运行已安装 Plugin 的 `scripts/uninstall-windows.ps1` 清理自身进程和私有数据，再执行 `codex plugin remove`。只在用户明确要求卸载时执行。
 
-## 失败处理
+## 安全边界
 
-- `codex` 命令不存在：明确说明需要 Codex Desktop/CLI，停止安装。
-- Plugin 安装成功但窗口没出现：运行已安装目录内的 `scripts/diagnose-windows.ps1`，不要修改官方宠物。
-- Linux：明确说明当前没有桌面浮窗，不执行 Windows 或 macOS 脚本。
+- 不访问网络，不下载额外代码、模型或可执行文件。
+- 不读取密码、API Key、浏览器数据、剪贴板、按键内容、鼠标坐标或 Codex 对话正文。
+- 不设置开机启动、计划任务、注册表启动项或系统服务。
+- 不恢复被上传平台过滤的文件，不改名伪装不支持的格式。
+- 不生成死亡、墓碑或不可逆状态，不给出医疗结论。

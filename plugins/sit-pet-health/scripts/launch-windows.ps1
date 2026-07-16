@@ -23,7 +23,7 @@ $PluginData = [System.IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVari
 $env:CLAUDE_PLUGIN_ROOT = $PluginRoot
 $env:CLAUDE_PLUGIN_DATA = $PluginData
 $hookOutput = '{"hook_event_name":"SessionStart","session_id":""}' |
-    PowerShell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PluginRoot 'scripts\hook-windows.ps1')
+    PowerShell -NoProfile -File (Join-Path $PluginRoot 'scripts\hook-windows.ps1')
 $hookMessage = $null
 if (-not [string]::IsNullOrWhiteSpace(($hookOutput | Out-String))) {
     try { $hookMessage = [string](($hookOutput | Out-String) | ConvertFrom-Json).systemMessage }

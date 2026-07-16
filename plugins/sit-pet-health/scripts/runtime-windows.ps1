@@ -811,7 +811,7 @@ try {
     $settingsButton.Add_Click({
         Hide-StatusMenu
         $settingsScript = Join-Path $PluginRoot 'scripts\settings-windows.ps1'
-        $arguments = "-NoProfile -ExecutionPolicy Bypass -STA -File `"$settingsScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
+        $arguments = "-NoProfile -STA -File `"$settingsScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
         Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WindowStyle Hidden | Out-Null
     })
     $shareButton.Add_Click({
@@ -819,7 +819,7 @@ try {
         Save-State
         Show-Bubble -Text ([string]$dialogues.ui.shareGenerating) -Seconds 5
         $shareScript = Join-Path $PluginRoot 'scripts\share-card-windows.ps1'
-        $arguments = "-NoProfile -ExecutionPolicy Bypass -STA -File `"$shareScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
+        $arguments = "-NoProfile -STA -File `"$shareScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
         Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WindowStyle Hidden | Out-Null
     })
     $resetPositionButton.Add_Click({ Hide-StatusMenu; Move-ToDefaultPosition; Save-State })
@@ -1046,7 +1046,7 @@ try {
         $candidateCount = if ($null -ne $currentPet.PSObject.Properties['candidateCount']) { [int]$currentPet.candidateCount } else { 1 }
         if ($candidateCount -gt 1 -and -not (Test-Path -LiteralPath (Join-Path $PluginData 'picker-completed.flag'))) {
             $settingsScript = Join-Path $PluginRoot 'scripts\settings-windows.ps1'
-            $arguments = "-NoProfile -ExecutionPolicy Bypass -STA -File `"$settingsScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`" -FirstRun"
+            $arguments = "-NoProfile -STA -File `"$settingsScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`" -FirstRun"
             Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WindowStyle Hidden | Out-Null
         }
     })
@@ -1082,6 +1082,6 @@ finally {
 
 if ($restartRequested) {
     $runtimeScript = Join-Path $PluginRoot 'scripts\runtime-windows.ps1'
-    $arguments = "-NoProfile -ExecutionPolicy Bypass -STA -File `"$runtimeScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
+    $arguments = "-NoProfile -STA -File `"$runtimeScript`" -PluginRoot `"$PluginRoot`" -PluginData `"$PluginData`""
     Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WindowStyle Hidden | Out-Null
 }

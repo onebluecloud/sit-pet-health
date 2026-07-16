@@ -23,13 +23,13 @@ RousePet 会把 `/hatch` 生成的 Codex 宠物只读复制到桌面，让它随
 
 ## RedSkill 安装
 
-小红书 RedSkill 版本使用 Release 附件 `rousepet-redskill-v1.2.1.zip`。附件已经包含 Skill、Plugin、Hooks、健康动作补齐流程、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。上传包使用兼容载体保存 YAML 元数据和许可证，避免平台过滤后破坏 Skill 结构。
+小红书 RedSkill 版本使用 Release 附件 `rousepet-redskill-v1.3.0.zip`。附件已经包含 Skill、Plugin、Hooks、健康动作补齐流程、脚本和许可，不需要再访问 GitHub，也不会安装 EXE。上传包只包含平台可直接识别的 `.json`、`.md`、`.ps1`、`.py` 和 `.txt` 文件，不伪装或恢复被平台过滤的格式。
 
 把压缩包作为 RedSkill 获取后，对 Codex 说：
 
 > 安装并立即显示 RousePet，保持我的官方 Codex 宠物完全不变。
 
-根目录 [SKILL.md](SKILL.md) 会调用包内安装器、注册本地 marketplace、安装 Plugin 并立即启动桌宠。未来会话第一次触发时仍会显示 Codex Hooks 信任审核；该审核不能绕过。
+根目录 [SKILL.md](SKILL.md) 会先披露只读宠物、私有数据、系统空闲秒数、Codex 生命周期 Hooks、桌面常驻窗口和卸载范围。用户明确同意后，才调用包内安装器、注册本地 marketplace、安装 Plugin 并启动桌宠。未来会话第一次触发时仍会显示 Codex Hooks 信任审核；该审核不能绕过。
 
 ## GitHub 安装
 
@@ -52,7 +52,7 @@ codex plugin add sit-pet-health@sit-pet-health --json
 
 1. 用 `codex plugin marketplace add <当前仓库地址>` 加入 marketplace。
 2. 用 `codex plugin add sit-pet-health@sit-pet-health --json` 安装，并读取返回的 `installedPath`。
-3. Windows 运行 `PowerShell -ExecutionPolicy Bypass -File <installedPath>\scripts\launch-windows.ps1`；macOS 运行 `/bin/zsh <installedPath>/scripts/launch-macos.sh`。不要要求用户自己找目录或编辑脚本。
+3. Windows 在当前 PowerShell 会话运行 `& <installedPath>\scripts\launch-windows.ps1`；macOS 运行 `/bin/zsh <installedPath>/scripts/launch-macos.sh`。不要覆盖系统脚本策略，也不要要求用户自己找目录或编辑脚本。
 4. 告知用户未来会话只需完成一次 Codex Hooks 信任审核。
 
 ## 数据边界
@@ -73,6 +73,8 @@ codex plugin add sit-pet-health@sit-pet-health --json
 - macOS：实验性支持。使用系统自带 JXA/AppKit/CoreGraphics，不安装 `.app`；当前发布做过语法和协议校验，尚未完成 macOS 真机 UI 验收，设置页与分享卡暂为 Windows 功能。
 - Linux：暂不提供桌面浮窗。
 
+小红书 RedSkill v1.3.0 为降低审核与安装歧义，仅发布已真机验证的 Windows 子集；GitHub 完整源码仍保留 macOS 实验实现。
+
 ## RedSkill 发布材料
 
 ![小红书 7 页发布图组](docs/publish/xiaohongshu/contact-sheet.png)
@@ -80,8 +82,9 @@ codex plugin add sit-pet-health@sit-pet-health --json
 - 小红书正文、标题和配图顺序：[`docs/publish/xiaohongshu-post.md`](docs/publish/xiaohongshu-post.md)
 - 完整 HTML 发布说明：[`docs/publish/rousepet-xhs-publish-guide.html`](docs/publish/rousepet-xhs-publish-guide.html)
 - RedSkill 上传检查单：[`docs/publish/redskill-upload-checklist.md`](docs/publish/redskill-upload-checklist.md)
-- GitHub Release 文案：[`docs/publish/github-release-v1.2.1.md`](docs/publish/github-release-v1.2.1.md)
-- 打包：`PowerShell -ExecutionPolicy Bypass -File scripts/build-redskill-package.ps1`
+- GitHub Release 文案：[`docs/publish/github-release-v1.3.0.md`](docs/publish/github-release-v1.3.0.md)
+- RedSkill 安全复核：[`docs/publish/redskill-v1.3.0-security-review.md`](docs/publish/redskill-v1.3.0-security-review.md)
+- 打包：在 PowerShell 中运行 `& .\scripts\build-redskill-package.ps1`
 
 ## 卸载
 
